@@ -1,0 +1,43 @@
+---
+// Main embed player that routes to appropriate player component
+import { detectEmbedType, getAspectRatioClass } from "../lib/embedUtils";
+import LottiePlayer from "./embeds/LottiePlayer.astro";
+import RivePlayer from "./embeds/RivePlayer.astro";
+import RiveEmbed from "./embeds/RiveEmbed.astro";
+import FigmaEmbed from "./embeds/FigmaEmbed.astro";
+import VideoPlayer from "./embeds/VideoPlayer.astro";
+import YouTubeEmbed from "./embeds/YouTubeEmbed.astro";
+import UnicornEmbed from "./embeds/UnicornEmbed.astro";
+import GenericEmbed from "./embeds/GenericEmbed.astro";
+
+interface Props {
+  src: string;
+  type?: string;
+  aspectRatio?: string;
+}
+
+const { src, type, aspectRatio } = Astro.props;
+
+if (!src) {
+  return null;
+}
+
+const embedType = detectEmbedType(src, type);
+const aspectClass = aspectRatio || getAspectRatioClass(embedType);
+---
+
+<div class={`relative w-full overflow-hidden rounded-lg bg-muted ${aspectClass}`}>
+  {embedType === 'lottie' && <LottiePlayer src={src} />}
+  {embedType === 'rive' && <RivePlayer src={src} />}
+  {embedType === 'rive-embed' && <RiveEmbed src={src} />}
+  {embedType === 'figma' && <FigmaEmbed src={src} />}
+  {embedType === 'youtube' && <YouTubeEmbed src={src} />}
+  {embedType === 'video' && <VideoPlayer src={src} />}
+  {embedType === 'unicorn' && <UnicornEmbed src={src} />}
+  {embedType === 'iframe' && <GenericEmbed src={src} />}
+  {embedType === 'none' && (
+    <div class="flex h-full items-center justify-center text-sm text-muted-foreground">
+      No embed source provided
+    </div>
+  )}
+</div>

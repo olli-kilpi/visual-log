@@ -1,0 +1,16 @@
+---
+// Rive embed iframe (for rive.app/community embed URLs)
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+---
+
+<iframe
+  class="h-full w-full border-0"
+  src={src}
+  allowfullscreen
+  loading="lazy"
+  style="border: 0;"
+></iframe>

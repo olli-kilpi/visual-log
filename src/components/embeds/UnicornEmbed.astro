@@ -1,0 +1,19 @@
+---
+// Unicorn Studio shader embed component
+// Uses iframe embed URL: https://www.unicorn.studio/embed/{projectId}
+
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+---
+
+<iframe
+  class="absolute inset-0 h-full w-full border-0"
+  src={src}
+  title="Unicorn Studio interactive scene"
+  loading="lazy"
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+  style="pointer-events: auto;"
+></iframe>

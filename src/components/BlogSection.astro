@@ -1,0 +1,165 @@
+---
+// Visual Log section with filtering and layout toggle
+// Reusable across home and visual-log pages
+import type { Section } from "../lib/sections";
+import Card from "./ui/Card.astro";
+import FilterPanel from "./FilterPanel.astro";
+
+interface Props {
+  sections: Section[];
+  showFilter?: boolean;
+  stickyFilter?: boolean;
+  defaultFilter?: "selected" | "all";
+  showAllButton?: boolean;
+}
+
+const { 
+  sections, 
+  showFilter = true, 
+  stickyFilter = false,
+  defaultFilter = "selected",
+  showAllButton = false
+} = Astro.props;
+
+// Extract unique tags from all sections
+const tags = Array.from(
+  new Set(sections.flatMap((section) => section.tags))
+).sort((a, b) => a.localeCompare(b));
+---
+
+<div class="relative bg-muted" id="visual-log-section">
+  {showFilter && <FilterPanel tags={tags} isSticky={stickyFilter} />}
+  
+  <div class="section-shell py-12">
+    <div
+      id="visual-log-grid"
+      data-layout="grid"
+      class="transition-all duration-300"
+    >
+      {sections.map((section) => (
+        <Card
+          id={section.id}
+          title={section.title}
+          content={section.content}
+          tags={section.tags}
+          link={section.link}
+          media={section.media}
+          embedUrl={section.embedUrl}
+          embedType={section.embedType}
+          visibility={section.visibility}
+        />
+      ))}
+    </div>
+  </div>
+  
+  {showAllButton && (
+    <div class="border-t border-border/50 bg-muted py-8">
+      <div class="section-shell flex justify-center">
+        <a
+          href="/visual-log"
+          class="inline-flex items-center gap-2 rounded-lg border border-accent bg-accent px-6 py-3 text-sm font-medium text-accent-foreground transition hover:bg-accent/90"
+        >
+          All projects →
+        </a>
+      </div>
+    </div>
+  )}
+</div>
+
+<script define:vars={{ defaultFilter }}>
+  // Filter and layout toggle logic
+  const visualLogGrid = document.getElementById("visual-log-grid");
+  const cards = Array.from(document.querySelectorAll("[data-section]"));
+  const filterButtons = Array.from(
+    document.querySelectorAll("button[data-filter], button[data-tag]")
+  );
+  const layoutButtons = Array.from(
+    document.querySelectorAll("button[data-layout-toggle]")
+  );
+
+  // Set active state for filter buttons
+  const setActiveFilter = (button) => {
+    filterButtons.forEach((btn) => {
+      btn.setAttribute("data-active", btn === button ? "true" : "false");
+    });
+  };
+
+  // Set active state for layout buttons
+  const setActiveLayout = (button) => {
+    layoutButtons.forEach((btn) => {
+      btn.setAttribute("data-active", btn === button ? "true" : "false");
+    });
+  };
+
+  // Show only selected works
+  const showSelectedWorks = () => {
+    cards.forEach((card) => {
+      const visibility = card.getAttribute("data-visibility") || "";
+      card.classList.toggle("hidden", visibility !== "selected works");
+    });
+  };
+
+  // Show all items
+  const showAll = () => {
+    cards.forEach((card) => {
+      card.classList.remove("hidden");
+    });
+  };
+
+  // Show items by tag
+  const showByTag = (tag) => {
+    cards.forEach((card) => {
+      const tags = (card.getAttribute("data-tags") || "")
+        .split("|")
+        .filter(Boolean);
+      card.classList.toggle("hidden", !tags.includes(tag));
+    });
+  };
+
+  // Handle filter button clicks
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.getAttribute("data-filter");
+      const tag = button.getAttribute("data-tag");
+
+      if (filter === "selected") {
+        setActiveFilter(button);
+        showSelectedWorks();
+        return;
+      }
+
+      if (filter === "all") {
+        setActiveFilter(button);
+        showAll();
+        return;
+      }
+
+      if (tag) {
+        setActiveFilter(button);
+        showByTag(tag);
+      }
+    });
+  });
+
+  // Handle layout toggle
+  layoutButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const layout = button.getAttribute("data-layout-toggle");
+      if (layout && visualLogGrid) {
+        visualLogGrid.setAttribute("data-layout", layout);
+        setActiveLayout(button);
+      }
+    });
+  });
+
+  // Initialize with default filter
+  const defaultFilterButton = document.querySelector(`button[data-filter="${defaultFilter}"]`);
+  if (defaultFilterButton) {
+    if (defaultFilter === "selected") {
+      showSelectedWorks();
+    } else if (defaultFilter === "all") {
+      showAll();
+    }
+    setActiveFilter(defaultFilterButton);
+  }
+</script>

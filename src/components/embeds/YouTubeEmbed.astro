@@ -1,0 +1,39 @@
+---
+// YouTube video embed
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+
+// Extract video ID from various YouTube URL formats
+let videoId = '';
+try {
+  const url = new URL(src);
+  if (url.hostname.includes('youtube.com')) {
+    videoId = url.searchParams.get('v') || '';
+  } else if (url.hostname.includes('youtu.be')) {
+    videoId = url.pathname.slice(1);
+  }
+} catch {
+  // If URL parsing fails, try to extract ID directly
+  const match = src.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  if (match) videoId = match[1];
+}
+
+const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
+---
+
+{videoId ? (
+  <iframe
+    class="h-full w-full border-0"
+    src={embedUrl}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    loading="lazy"
+  ></iframe>
+) : (
+  <div class="flex h-full items-center justify-center text-sm text-muted-foreground">
+    Invalid YouTube URL
+  </div>
+)}

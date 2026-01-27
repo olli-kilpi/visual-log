@@ -1,0 +1,72 @@
+@import "./tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+}
+
+@layer components {
+  .section-shell {
+    @apply mx-auto w-full max-w-screen-xl px-6 py-16 md:px-10;
+  }
+
+  /* Blog layout toggle styles */
+  [data-layout="grid"] {
+    @apply grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* All cards default to flex column (vertical) */
+  [data-layout="grid"] .card,
+  [data-layout="list"] .card {
+    @apply flex-col;
+  }
+
+  [data-layout="list"] {
+    @apply flex flex-col gap-8;
+  }
+
+  [data-layout="list"] .card {
+    @apply mx-auto w-full max-w-6xl;
+  }
+
+  /* Horizontal layout for list view on desktop only */
+  @media (min-width: 1024px) {
+    [data-layout="list"] .card {
+      @apply flex-row;
+    }
+
+    [data-layout="list"] .card-media {
+      @apply w-1/2 flex-shrink-0;
+    }
+
+    [data-layout="list"] .card-content {
+      @apply w-1/2;
+    }
+  }
+
+  /* Mobile and grid: ensure vertical stack and full width */
+  [data-layout="grid"] .card-media,
+  [data-layout="grid"] .card-content {
+    @apply w-full;
+  }
+}

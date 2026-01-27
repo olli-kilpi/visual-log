@@ -1,0 +1,75 @@
+---
+// Rive animation player using @rive-app/canvas
+interface Props {
+  src: string;
+  artboard?: string;
+  stateMachine?: string;
+}
+
+const { src, artboard, stateMachine } = Astro.props;
+const canvasId = `rive-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="relative h-full w-full">
+  <canvas class="h-full w-full" id={canvasId}></canvas>
+</div>
+
+<script
+  src="https://unpkg.com/@rive-app/canvas@2.7.0/rive.js"
+  defer
+></script>
+
+<script define:vars={{ canvasId, src, artboard, stateMachine }}>
+  // Wait for Rive to load and DOM to be ready
+  function initRive() {
+    // Check if Rive library is loaded
+    if (typeof window.rive === 'undefined') {
+      setTimeout(initRive, 100);
+      return;
+    }
+
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      // Canvas not found yet, retry
+      setTimeout(initRive, 100);
+      return;
+    }
+
+    // Ensure canvas has dimensions
+    const container = canvas.parentElement;
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+    }
+
+    try {
+      const riveConfig = {
+        src: src,
+        canvas: canvas,
+        autoplay: true,
+        layout: new window.rive.Layout({
+          fit: window.rive.Fit.Contain,
+          alignment: window.rive.Alignment.Center,
+        }),
+      };
+
+      if (artboard) riveConfig.artboard = artboard;
+      if (stateMachine) riveConfig.stateMachines = stateMachine;
+
+      new window.rive.Rive(riveConfig);
+    } catch (error) {
+      console.error('Rive load error:', error);
+      console.error('Failed to load Rive file:', src);
+    }
+  }
+
+  // Start initialization when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRive);
+  } else {
+    initRive();
+  }
+</script>

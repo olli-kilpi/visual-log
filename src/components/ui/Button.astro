@@ -1,0 +1,33 @@
+---
+import type { ButtonVariants } from "../../lib/ui/button";
+import { buttonVariants } from "../../lib/ui/button";
+import { cn } from "../../lib/utils";
+
+interface Props extends ButtonVariants {
+  as?: "button" | "a";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+}
+
+const {
+  as = "button",
+  href,
+  type = "button",
+  variant,
+  size,
+  class: className
+} = Astro.props;
+
+const classes = cn(buttonVariants({ variant, size }), className);
+---
+
+{as === "a" ? (
+  <a class={classes} href={href}>
+    <slot />
+  </a>
+) : (
+  <button class={classes} type={type}>
+    <slot />
+  </button>
+)}

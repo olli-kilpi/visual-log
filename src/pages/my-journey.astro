@@ -1,0 +1,69 @@
+---
+// My Journey page - Timeline placeholder (to be designed later)
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="My Journey - Olli Kilpi">
+  <Navigation />
+  <main class="flex min-h-screen items-center bg-muted">
+    <div class="section-shell">
+      <div class="mx-auto max-w-3xl space-y-8 py-16 text-center">
+        <div class="space-y-4">
+          <h1 class="text-4xl font-semibold md:text-5xl">My Journey</h1>
+          <p class="text-lg text-muted-foreground">
+            A visual timeline of my design and development journey
+          </p>
+        </div>
+        
+        <div class="space-y-6 rounded-lg border border-border/60 bg-card p-8 text-left shadow-sm md:p-12">
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="mt-1 h-3 w-3 rounded-full bg-accent"></div>
+              <div class="flex-1 space-y-2">
+                <h3 class="font-semibold">Timeline Coming Soon</h3>
+                <p class="text-sm text-muted-foreground">
+                  I'm designing an interactive timeline to showcase my professional journey, 
+                  key projects, and milestones. Check back soon!
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-4 opacity-60">
+              <div class="mt-1 h-3 w-3 rounded-full border-2 border-border"></div>
+              <div class="flex-1 space-y-2">
+                <h3 class="font-semibold">Placeholder Content</h3>
+                <p class="text-sm text-muted-foreground">
+                  This section will include career highlights, education, notable projects, 
+                  and personal growth moments.
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-4 opacity-40">
+              <div class="mt-1 h-3 w-3 rounded-full border-2 border-border"></div>
+              <div class="flex-1 space-y-2">
+                <h3 class="font-semibold">Interactive Elements</h3>
+                <p class="text-sm text-muted-foreground">
+                  The timeline will be fully interactive with detailed views, 
+                  images, and contextual information for each milestone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <a 
+            href="/" 
+            class="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+          >
+            ← Back to home
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

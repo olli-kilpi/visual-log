@@ -1,0 +1,108 @@
+:root {
+  /* ============================================
+     COLOR SYSTEM (Pure grayscale - Hex format)
+     ============================================ */
+  
+  /* Background colors */
+  --color-bg: #fcfcfc;            /* Main background - almost white */
+  --color-muted: #f5f5f5;         /* Light gray background */
+  --color-card: #ffffff;          /* Card background - pure white */
+  --color-footer-bg: #404040;     /* Footer background - dark gray */
+  
+  /* Text colors */
+  --color-fg: #1c1c1c;            /* Primary text - very dark gray */
+  --color-muted-fg: #787878;      /* Secondary/muted text - medium gray */
+  --color-footer-fg: #fafafa;     /* Text on dark backgrounds - almost white */
+  
+  /* Accent colors */
+  --color-accent: #333333;        /* Primary accent - dark gray */
+  --color-accent-fg: #ffffff;     /* Text on accent - white */
+  
+  /* UI elements */
+  --color-border: #e0e0e0;        /* Borders and dividers - light gray */
+  --color-ring: #333333;          /* Focus rings - dark gray */
+
+  /* ============================================
+     SPACING SCALE
+     ============================================ */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  
+  /* Font families */
+  --font-sans: "Inter", "SF Pro Text", system-ui, -apple-system, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Font sizes and line heights */
+  --text-xs: 0.75rem;       /* 12px */
+  --leading-xs: 1.1rem;
+  --text-sm: 0.875rem;      /* 14px */
+  --leading-sm: 1.35rem;
+  --text-md: 1rem;          /* 16px - base */
+  --leading-md: 1.6rem;
+  --text-lg: 1.125rem;      /* 18px */
+  --leading-lg: 1.75rem;
+  --text-xl: 1.25rem;       /* 20px */
+  --leading-xl: 1.85rem;
+  --text-2xl: 1.5rem;       /* 24px */
+  --leading-2xl: 2rem;
+  --text-3xl: 1.875rem;     /* 30px */
+  --leading-3xl: 2.4rem;
+  --text-4xl: 2.25rem;      /* 36px */
+  --leading-4xl: 2.8rem;
+
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+  --radius-sm: 0.375rem;    /* 6px */
+  --radius-md: 0.5rem;      /* 8px */
+  --radius-lg: 0.75rem;     /* 12px */
+  --radius-xl: 1rem;        /* 16px */
+
+  /* ============================================
+     SHADOWS
+     ============================================ */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --shadow-lg: 0 18px 48px rgba(15, 23, 42, 0.16);
+}
+
+/* ============================================
+   DARK MODE
+   Applied via .dark class only (manual control)
+   ============================================ */
+
+/* Manual dark mode */
+:root.dark {
+  /* Background colors */
+  --color-bg: #141414;
+  --color-muted: #242424;
+  --color-card: #1f1f1f;
+  --color-footer-bg: #0a0a0a;
+  
+  /* Text colors */
+  --color-fg: #fafafa;
+  --color-muted-fg: #b3b3b3;
+  --color-footer-fg: #f2f2f2;
+  
+  /* Accent colors */
+  --color-accent: #cccccc;
+  --color-accent-fg: #1c1c1c;
+  
+  /* UI elements */
+  --color-border: #333333;
+  --color-ring: #cccccc;
+}

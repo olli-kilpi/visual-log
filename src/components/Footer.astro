@@ -1,0 +1,206 @@
+---
+// Footer section - uses dark background with multi-column layout
+// Includes theme toggle for manual dark/light mode switching
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<!-- Footer section - 100vh with dark background, overlays sticky elements -->
+<footer 
+  class="relative z-30 flex min-h-screen items-center border-t border-border/50" 
+  style="background-color: var(--color-footer-bg);"
+  id="about"
+>
+  <div class="section-shell w-full space-y-12">
+    <!-- Header Section -->
+    <div class="space-y-3">
+      <h2 class="text-3xl font-semibold md:text-4xl" style="color: var(--color-footer-fg);">
+        Section Heading
+      </h2>
+      <p class="text-lg" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+        Subheading to explain what the H1 means
+      </p>
+    </div>
+
+    <!-- Mobile Tabs (visible on small screens only) -->
+    <div class="flex gap-2 border-b lg:hidden" style="border-color: color-mix(in srgb, var(--color-footer-fg) 20%, transparent);">
+      <button
+        class="tab-button border-b-2 px-4 py-2 text-sm font-medium transition"
+        data-tab="about"
+        data-active="true"
+        style="color: var(--color-footer-fg); border-color: var(--color-footer-fg);"
+      >
+        About
+      </button>
+      <button
+        class="tab-button border-b-2 border-transparent px-4 py-2 text-sm font-medium transition"
+        data-tab="experience"
+        data-active="false"
+        style="color: color-mix(in srgb, var(--color-footer-fg) 50%, transparent);"
+      >
+        Experience
+      </button>
+      <button
+        class="tab-button border-b-2 border-transparent px-4 py-2 text-sm font-medium transition"
+        data-tab="connect"
+        data-active="false"
+        style="color: color-mix(in srgb, var(--color-footer-fg) 50%, transparent);"
+      >
+        Connect
+      </button>
+    </div>
+
+    <!-- Multi-column Content Grid (Desktop: all visible, Mobile: tabs) -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-8">
+      <!-- Image/Media Column -->
+      <div class="space-y-4 tab-content" data-tab-content="about">
+        <div class="aspect-square w-full overflow-hidden rounded-lg bg-muted/20">
+          <div class="flex h-full items-center justify-center text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 40%, transparent);">
+            Image placeholder
+          </div>
+        </div>
+      </div>
+
+      <!-- Designer Section -->
+      <div class="space-y-3 tab-content" data-tab-content="about">
+        <h3 class="font-semibold" style="color: var(--color-footer-fg);">Designer</h3>
+        <p class="text-sm leading-relaxed" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+          Hi, I'm a versatile UX/UI designer with technical skills and experience in designing 
+          large digital consumer services. Olli's core expertise is solid visual and interaction design.
+        </p>
+      </div>
+
+      <!-- Currently / Past / Education Column -->
+      <div class="space-y-6 tab-content" data-tab-content="experience">
+        <!-- Currently -->
+        <div class="space-y-2">
+          <h3 class="font-semibold" style="color: var(--color-footer-fg);">Currently</h3>
+          <p class="text-sm leading-relaxed" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+            I'm a Lead designer at Futurice. It's a IT consultancy where we help our customer 
+            to define and build the future together.
+          </p>
+          <p class="text-sm leading-relaxed" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+            Over the past eight years, I have worked on long-term projects in Finland's largest companies.
+          </p>
+        </div>
+
+        <!-- Past -->
+        <div class="space-y-2">
+          <h3 class="font-semibold" style="color: var(--color-footer-fg);">Past</h3>
+          <p class="text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+            I have worked as Motion designer before I joined futurice.
+          </p>
+        </div>
+
+        <!-- Education -->
+        <div class="space-y-2">
+          <h3 class="font-semibold" style="color: var(--color-footer-fg);">Education</h3>
+          <p class="text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+            Lahti - Institute of Design<br />
+            B.A. Industrial Design<br />
+            2007 – 2012
+          </p>
+        </div>
+      </div>
+
+      <!-- Digital Appearance / Links Column -->
+      <div class="space-y-6 tab-content" data-tab-content="connect">
+        <div class="space-y-3">
+          <h3 class="font-semibold" style="color: var(--color-footer-fg);">Digital appearance</h3>
+          <div class="flex flex-col gap-2 text-sm">
+            <a 
+              href="https://linkedin.com/in/ollikilpi" 
+              target="_blank"
+              rel="noreferrer"
+              class="transition hover:underline"
+              style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);"
+            >
+              LinkedIn
+            </a>
+            <a 
+              href="https://github.com/ollikilpi" 
+              target="_blank"
+              rel="noreferrer"
+              class="transition hover:underline"
+              style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);"
+            >
+              Github
+            </a>
+            <a 
+              href="https://youtube.com/@ollikilpi" 
+              target="_blank"
+              rel="noreferrer"
+              class="transition hover:underline"
+              style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);"
+            >
+              Youtube
+            </a>
+            <a 
+              href="https://instagram.com/ollikilpi" 
+              target="_blank"
+              rel="noreferrer"
+              class="transition hover:underline"
+              style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);"
+            >
+              Instagram
+            </a>
+          </div>
+        </div>
+
+        <!-- Theme Toggle -->
+        <div class="pt-4">
+          <ThemeToggle />
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="border-t pt-6" style="border-color: color-mix(in srgb, var(--color-footer-fg) 20%, transparent);">
+      <p class="text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 50%, transparent);">
+        © 2026 Olli Kilpi
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Hide non-active tabs on mobile, show all on desktop */
+  @media (max-width: 1023px) {
+    .tab-content {
+      display: none;
+    }
+    .tab-content[data-active="true"] {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  // Mobile tab switching
+  const tabButtons = document.querySelectorAll(".tab-button");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetTab = button.getAttribute("data-tab");
+
+      // Update buttons
+      tabButtons.forEach((btn) => {
+        const isActive = btn.getAttribute("data-tab") === targetTab;
+        btn.setAttribute("data-active", isActive.toString());
+        if (isActive) {
+          btn.style.color = "var(--color-footer-fg)";
+          btn.style.borderColor = "var(--color-footer-fg)";
+        } else {
+          btn.style.color = "color-mix(in srgb, var(--color-footer-fg) 50%, transparent)";
+          btn.style.borderColor = "transparent";
+        }
+      });
+
+      // Update content
+      tabContents.forEach((content) => {
+        const isActive = content.getAttribute("data-tab-content") === targetTab;
+        content.setAttribute("data-active", isActive.toString());
+      });
+    });
+  });
+</script>

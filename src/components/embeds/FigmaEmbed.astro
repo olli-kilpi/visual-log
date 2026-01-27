@@ -1,0 +1,25 @@
+---
+// Figma prototype embed
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+
+// Convert Figma prototype URL to embed URL if needed
+let embedUrl = src;
+if (src.includes('figma.com/proto/') && !src.includes('embed')) {
+  // Convert proto URL to embed URL
+  embedUrl = src.replace('/proto/', '/embed?embed_host=share&url=https://www.figma.com/proto/');
+} else if (src.includes('figma.com/file/')) {
+  // Convert file URL to embed URL
+  embedUrl = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(src)}`;
+}
+---
+
+<iframe
+  class="h-full w-full border-0"
+  src={embedUrl}
+  allowfullscreen
+  loading="lazy"
+></iframe>

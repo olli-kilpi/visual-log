@@ -1,0 +1,49 @@
+---
+// Home page - Hero + Visual Log section with sticky filter + Footer
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogSection from "../components/BlogSection.astro";
+import Footer from "../components/Footer.astro";
+import Hero from "../components/Hero.astro";
+import Navigation from "../components/Navigation.astro";
+import { getSections } from "../lib/sections";
+
+const sections = await getSections();
+---
+
+<BaseLayout title="Olli Kilpi - Portfolio">
+  <Navigation />
+  <Hero />
+  <main class="relative z-10">
+    <BlogSection 
+      sections={sections} 
+      showFilter={true} 
+      stickyFilter={true}
+      defaultFilter="selected"
+      showAllButton={true}
+    />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Home button behavior: reset filter and scroll to hero
+  const homeButton = document.getElementById("nav-home");
+  const selectedButton = document.querySelector("button[data-filter='selected']");
+
+  if (homeButton) {
+    homeButton.addEventListener("click", (e) => {
+      // Only handle if we're already on the home page
+      if (window.location.pathname === "/") {
+        e.preventDefault();
+        
+        // Reset to selected works
+        if (selectedButton) {
+          selectedButton.click();
+        }
+        
+        // Scroll to hero
+        document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  }
+</script>

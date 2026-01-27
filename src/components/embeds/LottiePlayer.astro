@@ -1,0 +1,24 @@
+---
+// Lottie animation player - uses dotlottie-player for .lottie compressed files
+interface Props {
+  src: string;
+  autoplay?: boolean;
+  loop?: boolean;
+}
+
+const { src, autoplay = true, loop = true } = Astro.props;
+---
+
+<dotlottie-player
+  src={src}
+  background="transparent"
+  speed="1"
+  style="width: 100%; height: 100%;"
+  autoplay={autoplay}
+  loop={loop}
+></dotlottie-player>
+
+<script
+  src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
+  type="module"
+></script>
