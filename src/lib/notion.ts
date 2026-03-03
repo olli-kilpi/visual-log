@@ -15,3 +15,13 @@ export async function querySections(databaseId: string) {
     sorts: [{ property: "Order", direction: "ascending" }]
   });
 }
+
+export async function queryContent(databaseId: string) {
+  if (!notion) {
+    throw new Error("Notion token is missing.");
+  }
+
+  return notion.databases.query({
+    database_id: databaseId
+  });
+}

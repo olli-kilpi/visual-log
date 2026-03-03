@@ -1,7 +1,10 @@
 ---
-// Footer section - uses dark background with multi-column layout
+// Footer section — text content fetched from Notion CMS
 // Includes theme toggle for manual dark/light mode switching
 import ThemeToggle from "./ThemeToggle.astro";
+import { getContent } from "../lib/content";
+
+const content = await getContent();
 ---
 
 <!-- Footer section - 100vh with dark background, overlays sticky elements -->
@@ -14,10 +17,10 @@ import ThemeToggle from "./ThemeToggle.astro";
     <!-- Header Section -->
     <div class="space-y-3">
       <h2 class="text-3xl font-semibold md:text-4xl" style="color: var(--color-footer-fg);">
-        Section Heading
+        {content["footer.heading"]}
       </h2>
       <p class="text-lg" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
-        Subheading to explain what the H1 means
+        {content["footer.subheading"]}
       </p>
     </div>
 
@@ -64,8 +67,7 @@ import ThemeToggle from "./ThemeToggle.astro";
       <div class="space-y-3 tab-content" data-tab-content="about">
         <h3 class="font-semibold" style="color: var(--color-footer-fg);">Designer</h3>
         <p class="text-sm leading-relaxed" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
-          Hi, I'm a versatile UX/UI designer with technical skills and experience in designing 
-          large digital consumer services. Olli's core expertise is solid visual and interaction design.
+          {content["footer.bio"]}
         </p>
       </div>
 
@@ -75,11 +77,10 @@ import ThemeToggle from "./ThemeToggle.astro";
         <div class="space-y-2">
           <h3 class="font-semibold" style="color: var(--color-footer-fg);">Currently</h3>
           <p class="text-sm leading-relaxed" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
-            I'm a Lead designer at Futurice. It's a IT consultancy where we help our customer 
-            to define and build the future together.
+            {content["footer.currently"]}
           </p>
           <p class="text-sm leading-relaxed" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
-            Over the past eight years, I have worked on long-term projects in Finland's largest companies.
+            {content["footer.currently.extra"]}
           </p>
         </div>
 
@@ -87,17 +88,15 @@ import ThemeToggle from "./ThemeToggle.astro";
         <div class="space-y-2">
           <h3 class="font-semibold" style="color: var(--color-footer-fg);">Past</h3>
           <p class="text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
-            I have worked as Motion designer before I joined futurice.
+            {content["footer.past"]}
           </p>
         </div>
 
         <!-- Education -->
         <div class="space-y-2">
           <h3 class="font-semibold" style="color: var(--color-footer-fg);">Education</h3>
-          <p class="text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
-            Lahti - Institute of Design<br />
-            B.A. Industrial Design<br />
-            2007 – 2012
+          <p class="text-sm" style="white-space: pre-line; color: color-mix(in srgb, var(--color-footer-fg) 70%, transparent);">
+            {content["footer.education"]}
           </p>
         </div>
       </div>
@@ -154,10 +153,17 @@ import ThemeToggle from "./ThemeToggle.astro";
     </div>
 
     <!-- Copyright -->
-    <div class="border-t pt-6" style="border-color: color-mix(in srgb, var(--color-footer-fg) 20%, transparent);">
+    <div class="flex items-center justify-between border-t pt-6" style="border-color: color-mix(in srgb, var(--color-footer-fg) 20%, transparent);">
       <p class="text-sm" style="color: color-mix(in srgb, var(--color-footer-fg) 50%, transparent);">
         © 2026 Olli Kilpi
       </p>
+      <a
+        href="/design-system"
+        class="text-xs transition hover:underline"
+        style="color: color-mix(in srgb, var(--color-footer-fg) 30%, transparent);"
+      >
+        Design System
+      </a>
     </div>
   </div>
 </footer>

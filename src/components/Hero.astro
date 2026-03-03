@@ -1,5 +1,8 @@
 ---
-// Hero section with light gray background
+// Hero section — text content fetched from Notion CMS
+import { getContent } from "../lib/content";
+
+const content = await getContent();
 ---
 
 <section
@@ -9,15 +12,13 @@
   <div class="section-shell">
     <div class="max-w-3xl space-y-6">
       <p class="text-sm uppercase tracking-[0.2em] text-muted-foreground">
-        UI/UX Designer • Frontend Developer
+        {content["hero.role"]}
       </p>
       <h1 class="text-5xl font-semibold leading-tight md:text-6xl lg:text-7xl">
-        Olli Kilpi
+        {content["hero.title"]}
       </h1>
       <p class="text-lg leading-relaxed text-muted-foreground md:text-xl">
-        I design and build thoughtful digital experiences with a focus on simplicity, 
-        accessibility, and modern web technologies. Currently exploring the intersection 
-        of design systems and interactive storytelling.
+        {content["hero.body"]}
       </p>
     </div>
   </div>
