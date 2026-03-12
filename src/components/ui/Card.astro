@@ -1,7 +1,7 @@
 ---
-// Card component - reusable for blog items in grid or list layout
-// Uses token-based styling and responds to data-layout attribute
 import EmbedPlayer from "../EmbedPlayer.astro";
+import Modal from "./Modal.astro";
+import CardModal from "./CardModal.astro";
 import { detectEmbedType } from "../../lib/embedUtils";
 
 interface Props {
@@ -14,24 +14,33 @@ interface Props {
   embedUrl?: string;
   embedType?: string;
   visibility?: string;
+  bodyContent?: string;
 }
 
-const { 
-  id, 
-  title, 
-  content, 
-  tags = [], 
-  link, 
-  media, 
+const {
+  id,
+  title,
+  content,
+  tags = [],
+  link,
+  media,
   embedUrl,
   embedType,
-  visibility = "" 
+  visibility = "",
+  bodyContent,
 } = Astro.props;
 
-// Prioritize embedUrl, but also check if media is an embed type (like .riv files)
 const displaySource = embedUrl || media;
-const isEmbed = !!embedUrl || (media ? detectEmbedType(media) !== 'none' && detectEmbedType(media) !== 'iframe' : false);
-const mediaEmbedType = media && !embedUrl ? detectEmbedType(media) : undefined;
+const isEmbed =
+  !!embedUrl ||
+  (media
+    ? detectEmbedType(media) !== "none" && detectEmbedType(media) !== "iframe"
+    : false);
+const mediaEmbedType =
+  media && !embedUrl ? detectEmbedType(media) : undefined;
+
+const modalId = `modal-${id}`;
+const hasDetails = !!bodyContent;
 ---
 
 <article
@@ -41,11 +50,14 @@ const mediaEmbedType = media && !embedUrl ? detectEmbedType(media) : undefined;
   data-tags={tags.map((tag) => tag.toLowerCase()).join("|")}
   id={id}
 >
-  <!-- Media Section - always rendered for consistent layout -->
+  <!-- Media Section -->
   <div class="card-media w-full overflow-hidden">
     {displaySource ? (
       isEmbed ? (
-        <EmbedPlayer src={embedUrl || media!} type={embedType || mediaEmbedType} />
+        <EmbedPlayer
+          src={embedUrl || media!}
+          type={embedType || mediaEmbedType}
+        />
       ) : (
         <div class="aspect-video w-full overflow-hidden bg-muted">
           <img
@@ -58,17 +70,29 @@ const mediaEmbedType = media && !embedUrl ? detectEmbedType(media) : undefined;
       )
     ) : (
       <div class="aspect-video w-full overflow-hidden bg-muted flex items-center justify-center">
-        <svg class="h-16 w-16 text-muted-foreground/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <svg
+          class="h-16 w-16 text-muted-foreground/30"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
         </svg>
       </div>
     )}
   </div>
-  
+
   <!-- Content Section -->
   <div class="card-content flex flex-1 flex-col gap-3 p-6">
     <h2 class="text-xl font-semibold leading-tight md:text-2xl">{title}</h2>
-    <p class="flex-1 text-sm leading-relaxed text-muted-foreground md:text-base">{content}</p>
+    <p class="flex-1 text-sm leading-relaxed text-muted-foreground md:text-base">
+      {content}
+    </p>
     {tags.length > 0 && (
       <div class="flex flex-wrap gap-2">
         {tags.map((tag) => (
@@ -78,15 +102,41 @@ const mediaEmbedType = media && !embedUrl ? detectEmbedType(media) : undefined;
         ))}
       </div>
     )}
-    {link && (
-      <a
-        class="inline-flex items-center text-sm font-medium text-accent hover:underline"
-        href={link}
-        target="_blank"
-        rel="noreferrer"
-      >
-        View project →
-      </a>
-    )}
+    <div class="flex items-center gap-3">
+      {hasDetails && (
+        <button
+          data-modal-target={modalId}
+          class="inline-flex items-center text-sm font-medium text-accent hover:underline"
+        >
+          Details →
+        </button>
+      )}
+      {link && (
+        <a
+          class="inline-flex items-center text-sm font-medium text-accent hover:underline"
+          href={link}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View project →
+        </a>
+      )}
+    </div>
   </div>
 </article>
+
+{hasDetails && (
+  <Modal id={modalId}>
+    <CardModal
+      id={id}
+      title={title}
+      content={content}
+      tags={tags}
+      link={link}
+      media={media}
+      embedUrl={embedUrl}
+      embedType={embedType}
+      bodyContent={bodyContent}
+    />
+  </Modal>
+)}

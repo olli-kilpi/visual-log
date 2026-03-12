@@ -5,6 +5,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --nav-height: 3rem;
+  }
+
   * {
     @apply border-border;
   }
@@ -68,5 +72,73 @@
   [data-layout="grid"] .card-media,
   [data-layout="grid"] .card-content {
     @apply w-full;
+  }
+
+  /* Rich body content inside card modal */
+  .card-modal-body p {
+    @apply text-sm leading-relaxed text-muted-foreground lg:text-base;
+    margin-bottom: var(--space-4);
+  }
+
+  .card-modal-body h2 {
+    @apply text-lg font-semibold lg:text-xl;
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .card-modal-body h3 {
+    @apply text-base font-semibold lg:text-lg;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+  }
+
+  .card-modal-body ul,
+  .card-modal-body ol {
+    @apply text-sm text-muted-foreground lg:text-base;
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+
+  .card-modal-body ul {
+    list-style-type: disc;
+  }
+
+  .card-modal-body ol {
+    list-style-type: decimal;
+  }
+
+  .card-modal-body li {
+    margin-bottom: var(--space-1);
+  }
+
+  .card-modal-body blockquote {
+    @apply border-l-2 border-border pl-4 italic text-muted-foreground;
+    margin-bottom: var(--space-4);
+  }
+
+  .card-modal-body hr {
+    @apply border-border;
+    opacity: 0.4;
+    margin: var(--space-6) 0;
+  }
+
+  .card-modal-body figure {
+    margin-bottom: var(--space-4);
+  }
+
+  .card-modal-body figure img {
+    @apply w-full rounded-lg;
+  }
+
+  .card-modal-body figcaption {
+    @apply mt-2 text-xs text-muted-foreground;
+  }
+
+  .card-modal-body a {
+    @apply font-medium text-accent underline;
+  }
+
+  .card-modal-body code {
+    @apply rounded bg-muted px-1.5 py-0.5 text-xs;
   }
 }

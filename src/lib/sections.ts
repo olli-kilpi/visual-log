@@ -1,5 +1,5 @@
 import type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
-import { querySections } from "./notion";
+import { querySections, fetchPageBlocks, blocksToHtml } from "./notion";
 
 export type Section = {
   id: string;
@@ -14,6 +14,7 @@ export type Section = {
   embedType?: string;
   visibility: string;
   date?: string;
+  bodyContent?: string;
 };
 
 type SectionWithFlags = Section & {
@@ -155,7 +156,21 @@ export async function getSections(): Promise<Section[]> {
 
   try {
     const response = await querySections(databaseId);
-    return mapNotionSections(response);
+    const sections = mapNotionSections(response);
+
+    const sectionsWithBody = await Promise.all(
+      sections.map(async (section) => {
+        try {
+          const blocks = await fetchPageBlocks(section.id);
+          const bodyHtml = blocksToHtml(blocks);
+          return { ...section, bodyContent: bodyHtml || undefined };
+        } catch {
+          return section;
+        }
+      })
+    );
+
+    return sectionsWithBody;
   } catch (error) {
     console.warn("Notion fetch failed, falling back to local sections.", error);
     return fallbackSections;

@@ -28,6 +28,16 @@ const tags = Array.from(
 ---
 
 <div class="relative bg-muted" id="visual-log-section">
+
+  {showFilter && (
+    <div class="mx-auto w-full max-w-screen-xl px-6 pb-10 pt-16 md:px-10">
+      <h2 class="text-3xl font-semibold md:text-4xl">Visual Log</h2>
+      <p class="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+        A running archive of design work, visual experiments, and things I find worth documenting — UI explorations, photography, motion, and craft.
+      </p>
+    </div>
+  )}
+
   {showFilter && <FilterPanel tags={tags} isSticky={stickyFilter} />}
   
   <div class="section-shell py-12">
@@ -47,6 +57,7 @@ const tags = Array.from(
           embedUrl={section.embedUrl}
           embedType={section.embedType}
           visibility={section.visibility}
+          bodyContent={section.bodyContent}
         />
       ))}
     </div>
@@ -67,7 +78,6 @@ const tags = Array.from(
 </div>
 
 <script define:vars={{ defaultFilter }}>
-  // Filter and layout toggle logic
   const visualLogGrid = document.getElementById("visual-log-grid");
   const cards = Array.from(document.querySelectorAll("[data-section]"));
   const filterButtons = Array.from(
@@ -77,21 +87,81 @@ const tags = Array.from(
     document.querySelectorAll("button[data-layout-toggle]")
   );
 
-  // Set active state for filter buttons
+  // Expand / collapse state
+  const filterTagsContainer = document.getElementById("filter-tags-container");
+  const filterExpandToggle = document.getElementById("filter-expand-toggle");
+  const activeFilterChip = document.getElementById("active-filter-chip");
+  const activeFilterLabel = document.getElementById("active-filter-label");
+  const COLLAPSED_HEIGHT = "2.25rem";
+  let isExpanded = false;
+
+  // --- Collapse / expand helpers ---
+
+  function collapseFilters() {
+    if (!filterTagsContainer) return;
+    filterTagsContainer.style.maxHeight = COLLAPSED_HEIGHT;
+    if (filterExpandToggle) filterExpandToggle.textContent = "Show more";
+    isExpanded = false;
+    updateActiveChip();
+  }
+
+  function expandFilters() {
+    if (!filterTagsContainer) return;
+    filterTagsContainer.style.maxHeight = filterTagsContainer.scrollHeight + "px";
+    if (filterExpandToggle) filterExpandToggle.textContent = "Show less";
+    isExpanded = true;
+    if (activeFilterChip) activeFilterChip.style.display = "none";
+  }
+
+  // Show expand toggle only if filters overflow to a second row
+  function checkIfExpandNeeded() {
+    if (!filterButtons.length || !filterExpandToggle) return;
+    const firstRect = filterButtons[0].getBoundingClientRect();
+    const hasOverflow = filterButtons.some((btn) => {
+      return btn.getBoundingClientRect().top > firstRect.top + 8;
+    });
+    filterExpandToggle.style.display = hasOverflow ? "inline" : "none";
+  }
+
+  // A2: check whether the active button is visually hidden in the collapsed row
+  function isButtonHiddenWhenCollapsed(button) {
+    if (!filterButtons.length) return false;
+    const firstRect = filterButtons[0].getBoundingClientRect();
+    return button.getBoundingClientRect().top > firstRect.top + 8;
+  }
+
+  function updateActiveChip() {
+    if (!activeFilterChip || !activeFilterLabel) return;
+    const activeButton = filterButtons.find(
+      (btn) => btn.getAttribute("data-active") === "true"
+    );
+    if (!isExpanded && activeButton && isButtonHiddenWhenCollapsed(activeButton)) {
+      activeFilterChip.style.display = "flex";
+      activeFilterLabel.textContent = activeButton.textContent.trim();
+    } else {
+      activeFilterChip.style.display = "none";
+    }
+  }
+
+  // --- Filter / layout state ---
+
   const setActiveFilter = (button) => {
     filterButtons.forEach((btn) => {
       btn.setAttribute("data-active", btn === button ? "true" : "false");
     });
+    if (isExpanded) {
+      collapseFilters();
+    } else {
+      updateActiveChip();
+    }
   };
 
-  // Set active state for layout buttons
   const setActiveLayout = (button) => {
     layoutButtons.forEach((btn) => {
       btn.setAttribute("data-active", btn === button ? "true" : "false");
     });
   };
 
-  // Show only selected works
   const showSelectedWorks = () => {
     cards.forEach((card) => {
       const visibility = card.getAttribute("data-visibility") || "";
@@ -99,49 +169,30 @@ const tags = Array.from(
     });
   };
 
-  // Show all items
   const showAll = () => {
-    cards.forEach((card) => {
-      card.classList.remove("hidden");
-    });
+    cards.forEach((card) => card.classList.remove("hidden"));
   };
 
-  // Show items by tag
   const showByTag = (tag) => {
     cards.forEach((card) => {
-      const tags = (card.getAttribute("data-tags") || "")
-        .split("|")
-        .filter(Boolean);
+      const tags = (card.getAttribute("data-tags") || "").split("|").filter(Boolean);
       card.classList.toggle("hidden", !tags.includes(tag));
     });
   };
 
-  // Handle filter button clicks
+  // --- Event listeners ---
+
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const filter = button.getAttribute("data-filter");
       const tag = button.getAttribute("data-tag");
 
-      if (filter === "selected") {
-        setActiveFilter(button);
-        showSelectedWorks();
-        return;
-      }
-
-      if (filter === "all") {
-        setActiveFilter(button);
-        showAll();
-        return;
-      }
-
-      if (tag) {
-        setActiveFilter(button);
-        showByTag(tag);
-      }
+      if (filter === "selected") { setActiveFilter(button); showSelectedWorks(); return; }
+      if (filter === "all")      { setActiveFilter(button); showAll();           return; }
+      if (tag)                   { setActiveFilter(button); showByTag(tag);      return; }
     });
   });
 
-  // Handle layout toggle
   layoutButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const layout = button.getAttribute("data-layout-toggle");
@@ -152,14 +203,43 @@ const tags = Array.from(
     });
   });
 
-  // Initialize with default filter
-  const defaultFilterButton = document.querySelector(`button[data-filter="${defaultFilter}"]`);
-  if (defaultFilterButton) {
-    if (defaultFilter === "selected") {
-      showSelectedWorks();
-    } else if (defaultFilter === "all") {
-      showAll();
-    }
-    setActiveFilter(defaultFilterButton);
+  if (filterExpandToggle) {
+    filterExpandToggle.addEventListener("click", () => {
+      isExpanded ? collapseFilters() : expandFilters();
+    });
   }
+
+  // Chip click: clear filter → show all
+  if (activeFilterChip) {
+    activeFilterChip.addEventListener("click", () => {
+      const allButton = document.querySelector('button[data-filter="all"]');
+      if (allButton) { setActiveFilter(allButton); showAll(); }
+      activeFilterChip.style.display = "none";
+    });
+  }
+
+  // --- Initialise ---
+
+  const defaultFilterButton = document.querySelector(
+    `button[data-filter="${defaultFilter}"]`
+  );
+  if (defaultFilterButton) {
+    filterButtons.forEach((btn) => {
+      btn.setAttribute("data-active", btn === defaultFilterButton ? "true" : "false");
+    });
+    if (defaultFilter === "selected") showSelectedWorks();
+    else if (defaultFilter === "all") showAll();
+  }
+
+  // After first paint: check overflow and chip state
+  requestAnimationFrame(() => {
+    checkIfExpandNeeded();
+    updateActiveChip();
+  });
+
+  // Re-check on resize (viewport width affects row count)
+  window.addEventListener("resize", () => {
+    checkIfExpandNeeded();
+    if (!isExpanded) updateActiveChip();
+  });
 </script>

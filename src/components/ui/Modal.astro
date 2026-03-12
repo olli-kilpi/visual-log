@@ -1,0 +1,113 @@
+---
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+---
+
+<div
+  data-modal={id}
+  class="fixed inset-0 z-50 hidden items-center justify-center"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={`${id}-title`}
+>
+  <!-- Backdrop -->
+  <div data-modal-backdrop class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+  <!-- Desktop: centered panel / Mobile: bottom sheet -->
+  <div
+    data-modal-panel
+    class:list={[
+      "relative z-10 flex flex-col overflow-hidden border border-border bg-card shadow-lg",
+      "translate-y-4 opacity-0 transition-all duration-200 ease-out",
+      "w-full max-h-[90vh] rounded-t-xl sm:rounded-xl",
+      "sm:max-w-5xl sm:max-h-[80vh] sm:mx-6",
+      "fixed bottom-0 sm:static",
+      className,
+    ]}
+  >
+    <!-- Close button -->
+    <button
+      data-modal-close
+      class="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-card/80 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground"
+      aria-label="Close"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <slot />
+  </div>
+</div>
+
+<script>
+  function initModals() {
+    let activeModal: HTMLElement | null = null;
+    let previousFocus: HTMLElement | null = null;
+
+    function openModal(modal: HTMLElement) {
+      activeModal = modal;
+      previousFocus = document.activeElement as HTMLElement;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+
+      requestAnimationFrame(() => {
+        const panel = modal.querySelector("[data-modal-panel]");
+        if (panel) {
+          panel.classList.remove("translate-y-4", "opacity-0");
+          panel.classList.add("translate-y-0", "opacity-100");
+        }
+      });
+
+      const close = modal.querySelector("[data-modal-close]") as HTMLElement;
+      close?.focus();
+    }
+
+    function closeModal(modal: HTMLElement) {
+      const panel = modal.querySelector("[data-modal-panel]");
+      if (panel) {
+        panel.classList.remove("translate-y-0", "opacity-100");
+        panel.classList.add("translate-y-4", "opacity-0");
+      }
+
+      setTimeout(() => {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+        document.body.style.overflow = "";
+        activeModal = null;
+        previousFocus?.focus();
+      }, 200);
+    }
+
+    document.addEventListener("click", (e) => {
+      const trigger = (e.target as Element).closest("[data-modal-target]");
+      if (trigger) {
+        e.preventDefault();
+        const id = trigger.getAttribute("data-modal-target");
+        const modal = document.querySelector(`[data-modal="${id}"]`) as HTMLElement;
+        if (modal) openModal(modal);
+        return;
+      }
+
+      if (activeModal) {
+        const close = (e.target as Element).closest("[data-modal-close]");
+        const backdrop = (e.target as Element).closest("[data-modal-backdrop]");
+        if (close || backdrop) closeModal(activeModal);
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && activeModal) {
+        closeModal(activeModal);
+      }
+    });
+  }
+
+  initModals();
+  document.addEventListener("astro:after-swap", initModals);
+</script>

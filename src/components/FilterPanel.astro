@@ -1,5 +1,5 @@
 ---
-// Filter panel with tag filtering and layout toggle
+// Filter panel — collapsible single-row tag filters with A2 active chip
 // Conditionally sticky based on isSticky prop
 interface Props {
   tags: string[];
@@ -11,60 +11,91 @@ const stickyClass = isSticky ? "sticky top-12 z-10" : "";
 ---
 
 <div
-  class={`border-b border-border/50 bg-muted/95 backdrop-blur ${stickyClass}`}
+  class={`border-b border-border/50 bg-bg ${stickyClass}`}
   id="filter-panel"
 >
-  <div class="section-shell py-6">
-    <h2 class="mb-6 text-3xl font-semibold md:text-4xl">Visual Log</h2>
-    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div class="flex flex-wrap items-center gap-2">
-      <button
-        class="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/40 data-[active=true]:border-transparent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
-        data-filter="selected"
-        data-active="false"
+  <div class="section-shell py-4">
+    <div class="flex flex-col gap-2">
+
+      <!-- Collapsible tags row -->
+      <div
+        id="filter-tags-container"
+        class="flex flex-wrap items-center gap-2 overflow-hidden"
+        style="max-height: 2.25rem; transition: max-height 0.3s ease"
       >
-        Selected works
-      </button>
-      <button
-        class="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/40 data-[active=true]:border-transparent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
-        data-filter="all"
-        data-active="false"
-      >
-        Show all
-      </button>
-      {tags.map((tag) => (
         <button
           class="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/40 data-[active=true]:border-transparent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
-          data-tag={tag.toLowerCase()}
+          data-filter="selected"
           data-active="false"
         >
-          {tag}
+          Selected works
         </button>
-      ))}
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="text-xs text-muted-foreground">View:</span>
-      <button
-        class="rounded-md border border-border/60 p-2 transition hover:border-accent/40 data-[active=true]:border-accent data-[active=true]:bg-accent/10"
-        data-layout-toggle="grid"
-        data-active="true"
-        title="Grid view"
-      >
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-        </svg>
-      </button>
-      <button
-        class="rounded-md border border-border/60 p-2 transition hover:border-accent/40 data-[active=true]:border-accent data-[active=true]:bg-accent/10"
-        data-layout-toggle="list"
-        data-active="false"
-        title="List view"
-      >
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </div>
+        <button
+          class="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/40 data-[active=true]:border-transparent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
+          data-filter="all"
+          data-active="false"
+        >
+          Show all
+        </button>
+        {tags.map((tag) => (
+          <button
+            class="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/40 data-[active=true]:border-transparent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
+            data-tag={tag.toLowerCase()}
+            data-active="false"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+
+      <!-- Controls row: active chip (A2) + expand toggle + layout toggle -->
+      <div class="flex items-center gap-3">
+
+        <!-- Active filter chip: visible when active filter is hidden in collapsed state -->
+        <button
+          id="active-filter-chip"
+          class="hidden items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs text-accent transition hover:bg-accent/20"
+        >
+          <span id="active-filter-label"></span>
+          <span class="opacity-60">×</span>
+        </button>
+
+        <!-- Show more / Show less toggle; hidden if all filters fit in one row -->
+        <button
+          id="filter-expand-toggle"
+          class="hidden text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Show more
+        </button>
+
+        <div class="flex-1"></div>
+
+        <!-- Layout toggle -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-muted-foreground">View:</span>
+          <button
+            class="rounded-md border border-border/60 p-2 transition hover:border-accent/40 data-[active=true]:border-accent data-[active=true]:bg-accent/10"
+            data-layout-toggle="grid"
+            data-active="true"
+            title="Grid view"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+            </svg>
+          </button>
+          <button
+            class="rounded-md border border-border/60 p-2 transition hover:border-accent/40 data-[active=true]:border-accent data-[active=true]:bg-accent/10"
+            data-layout-toggle="list"
+            data-active="false"
+            title="List view"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

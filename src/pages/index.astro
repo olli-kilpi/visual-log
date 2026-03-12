@@ -1,10 +1,13 @@
 ---
-// Home page - Hero + Visual Log section with sticky filter + Footer
+// Home page - Hero + Proof + Process + Vision + Visual Log + Footer
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BlogSection from "../components/BlogSection.astro";
 import Footer from "../components/Footer.astro";
 import Hero from "../components/Hero.astro";
 import Navigation from "../components/Navigation.astro";
+import ProofSection from "../components/ProofSection.astro";
+import ProcessSection from "../components/ProcessSection.astro";
+import VisionSection from "../components/VisionSection.astro";
 import { getSections } from "../lib/sections";
 
 const sections = await getSections();
@@ -13,6 +16,9 @@ const sections = await getSections();
 <BaseLayout title="Olli Kilpi - Portfolio">
   <Navigation />
   <Hero />
+  <ProofSection />
+  <ProcessSection />
+  <VisionSection />
   <main class="relative z-10">
     <BlogSection 
       sections={sections} 

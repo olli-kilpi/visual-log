@@ -1,0 +1,104 @@
+---
+// Section 2 — The "process & tools" strip
+// App-like aesthetic, dense utility UI, workflow pipeline
+
+const steps = [
+  { icon: "◎", label: "Research", sub: "Interviews, data, context" },
+  { icon: "△", label: "Design", sub: "Figma, systems, tokens" },
+  { icon: "⬡", label: "Prototype", sub: "Interaction, motion, Lottie" },
+  { icon: "▣", label: "Code", sub: "Astro, React, CSS" },
+  { icon: "◆", label: "Ship", sub: "Vercel, CI/CD, iterate" },
+];
+
+const capabilities = [
+  { category: "Design", items: ["UX Research", "Interaction Design", "Design Systems", "Visual Design", "Prototyping"] },
+  { category: "Engineering", items: ["HTML / CSS", "TypeScript", "React / Astro", "Motion & Animation", "Accessibility"] },
+  { category: "Tools", items: ["Figma", "Lottie / Rive", "Git & GitHub", "Vercel", "Notion"] },
+];
+---
+
+<section class="relative z-10 border-y border-border/50 bg-bg">
+  {/* Top bar — monospace label */}
+  <div class="border-b border-border/50">
+    <div class="section-shell !py-4">
+      <div class="flex items-center gap-3">
+        <span class="h-2 w-2 rounded-full bg-accent" />
+        <span class="font-mono text-xs tracking-wider text-muted-foreground uppercase">
+          From research to ship
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {/* Pipeline strip */}
+  <div class="overflow-x-auto border-b border-border/50">
+    <div class="section-shell !py-0">
+      <div class="flex min-w-max">
+        {steps.map((step, i) => (
+          <div class="pipeline-step group relative flex flex-1 flex-col items-center gap-2 px-6 py-10 text-center">
+            {/* Connector line */}
+            {i < steps.length - 1 && (
+              <div class="absolute right-0 top-1/2 hidden h-px w-full -translate-y-1/2 bg-border/60 lg:block" />
+            )}
+            
+            {/* Icon */}
+            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-lg border border-border/60 bg-card text-xl shadow-sm transition-colors group-hover:border-accent/30 group-hover:bg-muted">
+              {step.icon}
+            </div>
+            
+            {/* Label */}
+            <span class="relative z-10 text-sm font-medium">
+              {step.label}
+            </span>
+            
+            {/* Sub */}
+            <span class="relative z-10 text-xs text-muted-foreground">
+              {step.sub}
+            </span>
+            
+            {/* Step number */}
+            <span class="absolute left-3 top-3 font-mono text-[10px] text-muted-foreground/40">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* Capabilities grid — spec sheet feel */}
+  <div class="section-shell">
+    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/40 md:grid-cols-3">
+      {capabilities.map((cap) => (
+        <div class="bg-card p-6 lg:p-8">
+          <h4 class="mb-4 font-mono text-xs tracking-wider text-muted-foreground uppercase">
+            {cap.category}
+          </h4>
+          <div class="flex flex-wrap gap-2">
+            {cap.items.map((item) => (
+              <span class="inline-flex items-center rounded-md border border-border/60 bg-muted/50 px-3 py-1.5 font-mono text-xs transition-colors hover:bg-muted hover:text-foreground">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    {/* Bottom note */}
+    <div class="mt-6 flex items-center justify-between">
+      <p class="text-xs text-muted-foreground">
+        I move between design and code — that's the point.
+      </p>
+      <span class="font-mono text-[10px] text-muted-foreground/40">
+        v1.0
+      </span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pipeline-step + .pipeline-step {
+    border-left: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  }
+</style>

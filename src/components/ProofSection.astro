@@ -1,0 +1,341 @@
+---
+// Section 1 — The "proof" section (v3)
+// Outer carousel: 3 project slides, 100vh
+// Each slide: inner image carousel (3 frames, auto-crossfade)
+// Navigation: thumbnail window-frame cards instead of dots
+
+const cases = [
+  {
+    title: "Redesigning the Service Platform",
+    role: "Lead UX Designer",
+    problem: "Legacy enterprise tool with 12-second average task completion time",
+    outcome: "3.2s average — 73% faster",
+    tag: "Enterprise UX",
+    bg: "linear-gradient(135deg, #1a1a2e 0%, #16213e 45%, #0f3460 100%)",
+    glow: "radial-gradient(circle at 68% 28%, rgba(96,130,255,0.18) 0%, transparent 55%)",
+    windowSide: "right" as const,
+    // 3 placeholder images — different shades + subtle UI-hint patterns
+    images: [
+      {
+        bg: "linear-gradient(160deg, #1e2d60 0%, #2a4280 100%)",
+        pattern: "repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 28px)",
+        label: "overview",
+      },
+      {
+        bg: "linear-gradient(160deg, #162244 0%, #1e3268 100%)",
+        pattern: "linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 28%, transparent 28%)",
+        label: "user flow",
+      },
+      {
+        bg: "linear-gradient(160deg, #0e1838 0%, #1a2855 100%)",
+        pattern: "repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 44px), repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 44px)",
+        label: "detail",
+      },
+    ],
+  },
+  {
+    title: "Design System from Zero",
+    role: "Design Engineer",
+    problem: "6 product teams, no shared language, inconsistent UI across 4 platforms",
+    outcome: "One system, 140+ components, adopted by all teams in Q1",
+    tag: "Design Systems",
+    bg: "linear-gradient(135deg, #1c1c1c 0%, #141414 50%, #0d0d0d 100%)",
+    glow: "radial-gradient(circle at 30% 62%, rgba(200,200,200,0.10) 0%, transparent 50%)",
+    windowSide: "left" as const,
+    images: [
+      {
+        bg: "linear-gradient(160deg, #2a2a2a 0%, #1e1e1e 100%)",
+        pattern: "repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 60px), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 60px)",
+        label: "components",
+      },
+      {
+        bg: "linear-gradient(160deg, #333333 0%, #252525 100%)",
+        pattern: "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 24px)",
+        label: "tokens",
+      },
+      {
+        bg: "linear-gradient(160deg, #1f1f1f 0%, #171717 100%)",
+        pattern: "radial-gradient(circle at 25% 40%, rgba(255,255,255,0.05) 0%, transparent 55%), radial-gradient(circle at 75% 65%, rgba(255,255,255,0.03) 0%, transparent 45%)",
+        label: "docs",
+      },
+    ],
+  },
+  {
+    title: "Mobile-First Citizen Portal",
+    role: "UX Designer & Prototyper",
+    problem: "Public sector service with 28% mobile completion rate",
+    outcome: "78% completion — launched to 200k+ users",
+    tag: "Public Sector",
+    bg: "linear-gradient(135deg, #12202e 0%, #0e1a24 50%, #071018 100%)",
+    glow: "radial-gradient(circle at 72% 65%, rgba(56,189,248,0.14) 0%, transparent 50%)",
+    windowSide: "right" as const,
+    images: [
+      {
+        bg: "linear-gradient(160deg, #102434 0%, #0e2030 100%)",
+        pattern: "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 30px)",
+        label: "overview",
+      },
+      {
+        bg: "linear-gradient(160deg, #152d40 0%, #122838 100%)",
+        pattern: "linear-gradient(90deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.045) 32%, transparent 32%)",
+        label: "mobile",
+      },
+      {
+        bg: "linear-gradient(160deg, #0a1c2c 0%, #0c2030 100%)",
+        pattern: "repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 50px)",
+        label: "flows",
+      },
+    ],
+  },
+];
+---
+
+<section id="proof-section" class="proof-section relative z-10 h-screen overflow-hidden">
+
+  {/* ── Outer slide track ── */}
+  <div class="proof-track flex h-full" style="width: 300%; transition: transform 0.65s cubic-bezier(0.77, 0, 0.18, 1);">
+    {cases.map((c, ci) => (
+      <div class="proof-slide relative flex h-full items-end" style="width: 33.3333%;">
+
+        {/* Slide background */}
+        <div class="absolute inset-0" style={`background: ${c.bg}`} />
+        <div class="absolute inset-0" style={`background-image: ${c.glow}`} />
+
+        {/* ── Window frame with inner image carousel ── */}
+        <div class:list={[
+          "absolute hidden flex-col overflow-hidden rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm lg:flex",
+          c.windowSide === "left"
+            ? "left-[7%] top-[10%] h-[64%] w-[40%]"
+            : "right-[7%] top-[10%] h-[64%] w-[40%]",
+        ]}>
+
+          {/* Chrome bar */}
+          <div class="flex shrink-0 items-center gap-2 border-b border-white/10 px-4 py-3">
+            <span class="h-2.5 w-2.5 rounded-full bg-white/20" />
+            <span class="h-2.5 w-2.5 rounded-full bg-white/12" />
+            <span class="h-2.5 w-2.5 rounded-full bg-white/08" />
+            <span class="ml-3 font-mono text-[11px] text-white/20">
+              {c.tag.toLowerCase().replace(/ /g, "-")} /&nbsp;
+              <span class="inner-chrome-label">overview</span>
+            </span>
+          </div>
+
+          {/* Image carousel area */}
+          <div
+            class="inner-carousel relative flex-1 overflow-hidden"
+            data-inner-id={ci}
+          >
+            {c.images.map((img, ii) => (
+              <div
+                class="inner-image absolute inset-0 transition-opacity duration-700"
+                data-slide={ii}
+                style={`background: ${img.bg}; background-image: ${img.pattern}; opacity: ${ii === 0 ? 1 : 0};`}
+              />
+            ))}
+
+            {/* Inner dot indicators */}
+            <div class="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+              {c.images.map((_, ii) => (
+                <span
+                  class="inner-dot h-1 rounded-full bg-white/40 transition-all duration-300"
+                  data-inner={ci}
+                  data-img={ii}
+                  style={`width: ${ii === 0 ? "1rem" : "0.25rem"}; opacity: ${ii === 0 ? 0.9 : 0.35};`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom scrim */}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
+        {/* Text content — extra bottom padding to clear thumbnails */}
+        <div class="section-shell relative z-10 pb-48 pt-28 lg:pb-52">
+          <div class:list={["max-w-lg", c.windowSide === "left" ? "lg:ml-auto" : ""]}>
+            <span class="mb-5 inline-block rounded-full border border-white/20 px-3 py-1 font-mono text-xs tracking-wider text-white/55 uppercase">
+              {c.tag}
+            </span>
+            <h3 class="mb-3 font-semibold text-white" style="font-size: clamp(1.75rem, 3.5vw, 3rem); line-height: 1.1;">
+              {c.title}
+            </h3>
+            <p class="mb-5 text-sm text-white/45">{c.role}</p>
+            <p class="mb-3 text-base leading-relaxed text-white/65">{c.problem}</p>
+            <p class="text-lg font-medium text-white">→ {c.outcome}</p>
+          </div>
+        </div>
+
+        {/* Slide index counter */}
+        <div class="absolute right-6 top-6 font-mono text-xs text-white/20 lg:right-10 lg:top-10">
+          {String(ci + 1).padStart(2, "0")} / {String(cases.length).padStart(2, "0")}
+        </div>
+
+      </div>
+    ))}
+  </div>
+
+  {/* ── Prev / Next arrows ── */}
+  <button
+    id="proof-prev"
+    class="absolute left-4 top-1/2 z-20 -translate-y-1/2 opacity-0 transition-opacity duration-300 lg:left-6"
+    style="pointer-events: none;"
+    aria-label="Previous case"
+  >
+    <span class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/70 backdrop-blur-sm transition hover:bg-black/50 hover:text-white">
+      ←
+    </span>
+  </button>
+  <button
+    id="proof-next"
+    class="absolute right-4 top-1/2 z-20 -translate-y-1/2 transition-opacity duration-300 lg:right-6"
+    aria-label="Next case"
+  >
+    <span class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/70 backdrop-blur-sm transition hover:bg-black/50 hover:text-white">
+      →
+    </span>
+  </button>
+
+  {/* ── Thumbnail navigation ── */}
+  <div class="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-end gap-3 lg:bottom-8 lg:gap-4">
+    {cases.map((c, i) => (
+      <button
+        class="proof-thumb group flex flex-col items-center gap-2 transition-all duration-300"
+        data-index={i}
+        aria-label={`Go to: ${c.title}`}
+        style={i === 0
+          ? "opacity: 1; transform: scale(1);"
+          : "opacity: 0.45; transform: scale(0.95);"}
+      >
+        {/* Mini window frame */}
+        <div
+          class="thumb-window overflow-hidden rounded-lg border transition-colors duration-300"
+          style={i === 0
+            ? "border-color: rgba(255,255,255,0.45); width: 148px; height: 98px;"
+            : "border-color: rgba(255,255,255,0.12); width: 148px; height: 98px;"}
+        >
+          {/* Chrome strip */}
+          <div class="flex items-center gap-1.5 border-b border-white/10 px-2.5 py-1.5" style={`background: ${c.bg}`}>
+            <span class="h-1.5 w-1.5 rounded-full bg-white/25" />
+            <span class="h-1.5 w-1.5 rounded-full bg-white/15" />
+            <span class="h-1.5 w-1.5 rounded-full bg-white/10" />
+          </div>
+          {/* Preview image — first gradient of this project */}
+          <div
+            class="h-[calc(98px-1.625rem)] w-full"
+            style={`background: ${c.images[0].bg}; background-image: ${c.images[0].pattern}`}
+          />
+        </div>
+        {/* Label */}
+        <span class="font-mono text-[10px] tracking-wider text-white/50 uppercase transition-colors group-hover:text-white/80">
+          {c.tag}
+        </span>
+      </button>
+    ))}
+  </div>
+
+</section>
+
+<style>
+  .proof-section {
+    contain: layout;
+  }
+</style>
+
+<script>
+  // ── Outer carousel ──
+  const track = document.querySelector(".proof-track") as HTMLElement;
+  const thumbs = document.querySelectorAll<HTMLButtonElement>(".proof-thumb");
+  const prevBtn = document.getElementById("proof-prev") as HTMLButtonElement;
+  const nextBtn = document.getElementById("proof-next") as HTMLButtonElement;
+  const total = thumbs.length;
+  let current = 0;
+
+  function goTo(index: number) {
+    current = Math.max(0, Math.min(total - 1, index));
+    track.style.transform = `translateX(-${current * (100 / total)}%)`;
+
+    thumbs.forEach((thumb, i) => {
+      const win = thumb.querySelector<HTMLElement>(".thumb-window")!;
+      if (i === current) {
+        thumb.style.opacity = "1";
+        thumb.style.transform = "scale(1)";
+        win.style.borderColor = "rgba(255,255,255,0.45)";
+      } else {
+        thumb.style.opacity = "0.45";
+        thumb.style.transform = "scale(0.95)";
+        win.style.borderColor = "rgba(255,255,255,0.12)";
+      }
+    });
+
+    prevBtn.style.opacity = current === 0 ? "0" : "1";
+    prevBtn.style.pointerEvents = current === 0 ? "none" : "auto";
+    nextBtn.style.opacity = current === total - 1 ? "0" : "1";
+    nextBtn.style.pointerEvents = current === total - 1 ? "none" : "auto";
+  }
+
+  prevBtn.addEventListener("click", () => goTo(current - 1));
+  nextBtn.addEventListener("click", () => goTo(current + 1));
+  thumbs.forEach((t, i) => t.addEventListener("click", () => goTo(i)));
+
+  // Keyboard
+  document.addEventListener("keydown", (e) => {
+    const section = document.getElementById("proof-section")!;
+    const rect = section.getBoundingClientRect();
+    if (rect.top > window.innerHeight || rect.bottom < 0) return;
+    if (e.key === "ArrowRight") goTo(current + 1);
+    if (e.key === "ArrowLeft") goTo(current - 1);
+  });
+
+  // Swipe
+  let touchStartX = 0;
+  const section = document.getElementById("proof-section")!;
+  section.addEventListener("touchstart", (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  section.addEventListener("touchend", (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+  });
+
+  // ── Inner image carousels ──
+  // Each carousel auto-advances its own images on a staggered timer
+  const innerCarousels = document.querySelectorAll<HTMLElement>(".inner-carousel");
+  const innerCounts: number[] = [];
+  const innerCurrent: number[] = [];
+
+  innerCarousels.forEach((carousel, ci) => {
+    const images = carousel.querySelectorAll<HTMLElement>(".inner-image");
+    const dots = document.querySelectorAll<HTMLElement>(`.inner-dot[data-inner="${ci}"]`);
+    const chromeLabel = carousel.closest(".lg\\:flex")?.querySelector<HTMLElement>(".inner-chrome-label");
+    const labels = Array.from(images).map(img => img.getAttribute("data-label") ?? "");
+    innerCounts.push(images.length);
+    innerCurrent.push(0);
+
+    function setInner(ii: number) {
+      innerCurrent[ci] = ii;
+      images.forEach((img, j) => {
+        img.style.opacity = j === ii ? "1" : "0";
+      });
+      dots.forEach((dot, j) => {
+        dot.style.width = j === ii ? "1rem" : "0.25rem";
+        dot.style.opacity = j === ii ? "0.9" : "0.35";
+      });
+    }
+
+    // Auto-advance, stagger start by carousel index
+    setTimeout(() => {
+      setInterval(() => {
+        setInner((innerCurrent[ci] + 1) % innerCounts[ci]);
+        // Update chrome label
+        if (chromeLabel) {
+          const imgs = carousel.querySelectorAll<HTMLElement>(".inner-image");
+          // get the label from the data on the slide
+          const slideLabels = ["overview", "user flow", "detail", "components", "tokens", "docs", "overview", "mobile", "flows"];
+          const offset = ci * 3;
+          chromeLabel.textContent = slideLabels[offset + innerCurrent[ci]] ?? "";
+        }
+      }, 2800);
+    }, ci * 900);
+  });
+
+  // Init
+  goTo(0);
+</script>

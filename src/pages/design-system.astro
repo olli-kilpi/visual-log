@@ -29,7 +29,7 @@ import Footer from "../components/Footer.astro";
       <section class="space-y-8">
         <div class="space-y-1">
           <h2 class="text-2xl font-semibold">Colors</h2>
-          <p class="text-sm text-muted-foreground">10 semantic tokens. All adapt in dark mode.</p>
+          <p class="text-sm text-muted-foreground">11 semantic tokens. All adapt in dark mode.</p>
         </div>
 
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -71,6 +71,15 @@ import Footer from "../components/Footer.astro";
                 <p class="font-mono text-xs text-muted-foreground">--color-footer-bg</p>
               </div>
               <p class="hidden font-mono text-xs text-muted-foreground sm:block">#404040</p>
+            </div>
+
+            <div class="flex items-center gap-4 rounded-md border border-border/60 p-3">
+              <div class="h-10 w-10 flex-shrink-0 rounded-md border border-border/60 shadow-sm" style="background-color: var(--color-footer-fg);"></div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium">Footer Foreground</p>
+                <p class="font-mono text-xs text-muted-foreground">--color-footer-fg</p>
+              </div>
+              <p class="hidden font-mono text-xs text-muted-foreground sm:block">#fafafa</p>
             </div>
           </div>
 
@@ -115,6 +124,17 @@ import Footer from "../components/Footer.astro";
             </div>
 
             <div class="flex items-center gap-4 rounded-md border border-border/60 p-3">
+              <div class="h-10 w-10 flex-shrink-0 rounded-md bg-accent shadow-sm flex items-center justify-center">
+                <span class="text-xs font-medium text-accent-foreground">Aa</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium">Accent Foreground</p>
+                <p class="font-mono text-xs text-muted-foreground">--color-accent-fg · text-accent-foreground</p>
+              </div>
+              <p class="hidden font-mono text-xs text-muted-foreground sm:block">#ffffff</p>
+            </div>
+
+            <div class="flex items-center gap-4 rounded-md border border-border/60 p-3">
               <div class="h-10 w-10 flex-shrink-0 rounded-md bg-bg shadow-sm ring-2 ring-ring"></div>
               <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium">Ring (Focus)</p>
@@ -136,7 +156,7 @@ import Footer from "../components/Footer.astro";
       <section class="space-y-8">
         <div class="space-y-1">
           <h2 class="text-2xl font-semibold">Typography</h2>
-          <p class="text-sm text-muted-foreground">8 steps from 12px to 36px. Each paired with a calibrated line height.</p>
+          <p class="text-sm text-muted-foreground">8 token steps (xs–4xl) from 12px to 36px, each with a calibrated line height. Display sizes (5xl–7xl) use Tailwind defaults.</p>
         </div>
 
         <div class="divide-y divide-border/40">
@@ -179,6 +199,21 @@ import Footer from "../components/Footer.astro";
             <span class="w-20 flex-shrink-0 font-mono text-xs text-muted-foreground">text-4xl</span>
             <span class="text-4xl">The quick brown fox</span>
             <span class="ml-auto hidden font-mono text-xs text-muted-foreground sm:block">36px / 2.8rem</span>
+          </div>
+          <div class="flex items-baseline gap-6 py-4">
+            <span class="w-20 flex-shrink-0 font-mono text-xs text-muted-foreground">text-5xl</span>
+            <span class="text-5xl">Display</span>
+            <span class="ml-auto hidden font-mono text-xs text-muted-foreground sm:block">48px · Tailwind default</span>
+          </div>
+          <div class="flex items-baseline gap-6 py-4">
+            <span class="w-20 flex-shrink-0 font-mono text-xs text-muted-foreground">text-6xl</span>
+            <span class="text-6xl">Display</span>
+            <span class="ml-auto hidden font-mono text-xs text-muted-foreground sm:block">60px · Tailwind default</span>
+          </div>
+          <div class="flex items-baseline gap-6 py-4">
+            <span class="w-20 flex-shrink-0 font-mono text-xs text-muted-foreground">text-7xl</span>
+            <span class="text-7xl">Display</span>
+            <span class="ml-auto hidden font-mono text-xs text-muted-foreground sm:block">72px · Tailwind default</span>
           </div>
         </div>
 
@@ -284,10 +319,10 @@ import Footer from "../components/Footer.astro";
       <section class="space-y-8">
         <div class="space-y-1">
           <h2 class="text-2xl font-semibold">Border Radius</h2>
-          <p class="text-sm text-muted-foreground">4 steps from 6px to 16px.</p>
+          <p class="text-sm text-muted-foreground">4 token steps from 6px to 16px, plus <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs">rounded-full</code> for pills and badges.</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-5">
           <div class="space-y-3 text-center">
             <div class="mx-auto h-20 w-20 rounded-sm border-2 border-accent/30 bg-muted"></div>
             <div>
@@ -318,6 +353,14 @@ import Footer from "../components/Footer.astro";
               <p class="text-sm font-medium">X-Large</p>
               <p class="font-mono text-xs text-muted-foreground">rounded-xl</p>
               <p class="mt-0.5 font-mono text-xs text-muted-foreground">16px</p>
+            </div>
+          </div>
+          <div class="space-y-3 text-center">
+            <div class="mx-auto h-20 w-20 rounded-full border-2 border-accent/30 bg-muted"></div>
+            <div>
+              <p class="text-sm font-medium">Full</p>
+              <p class="font-mono text-xs text-muted-foreground">rounded-full</p>
+              <p class="mt-0.5 font-mono text-xs text-muted-foreground">9999px</p>
             </div>
           </div>
         </div>
@@ -358,6 +401,33 @@ import Footer from "../components/Footer.astro";
             </div>
           </div>
         </div>
+      </section>
+
+      <!-- ==============================
+           LAYOUT VARIABLES
+           ============================== -->
+      <section class="space-y-8">
+        <div class="space-y-1">
+          <h2 class="text-2xl font-semibold">Layout Variables</h2>
+          <p class="text-sm text-muted-foreground">Structural values defined in <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs">global.css</code> for cross-component layout coordination.</p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-4 rounded-md border border-border/60 p-3">
+            <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border border-accent/20 bg-accent/10">
+              <span class="font-mono text-xs text-accent">3rem</span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium">Nav Height</p>
+              <p class="font-mono text-xs text-muted-foreground">--nav-height · defined in :root</p>
+            </div>
+            <p class="hidden font-mono text-xs text-muted-foreground sm:block">3rem / 48px = h-12 = --space-12</p>
+          </div>
+        </div>
+
+        <p class="rounded-md border border-border/60 px-4 py-3 text-xs text-muted-foreground">
+          Used in Hero: <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">height: calc(100dvh - var(--nav-height))</code>. Used in FilterPanel sticky offset: <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">top-12</code>. Update both when nav height changes.
+        </p>
       </section>
 
       <!-- ==============================
@@ -442,6 +512,46 @@ import Footer from "../components/Footer.astro";
             </article>
           </div>
         </div>
+        <!-- Active Filter Chip -->
+        <div class="space-y-6">
+          <h3 class="border-b border-border/50 pb-3 text-lg font-medium">Active Filter Chip</h3>
+          <div class="flex flex-wrap items-center gap-3">
+            <button class="flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs text-accent transition hover:bg-accent/20">
+              <span>Photography</span>
+              <span class="opacity-60">×</span>
+            </button>
+            <button class="flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs text-accent transition hover:bg-accent/20">
+              <span>Motion Design</span>
+              <span class="opacity-60">×</span>
+            </button>
+          </div>
+          <p class="text-xs text-muted-foreground">Appears in the filter panel controls row when the currently active filter tag is hidden in the collapsed single-row view. Clicking the chip clears the filter and resets to "Show all".</p>
+        </div>
+
+        <!-- Modal -->
+        <div class="space-y-6">
+          <h3 class="border-b border-border/50 pb-3 text-lg font-medium">Modal</h3>
+          <div class="max-w-md overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+            <div class="relative p-6">
+              <button class="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border/40 bg-card/80 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <h4 class="pr-8 text-xl font-semibold leading-tight">Modal Title</h4>
+              <p class="mt-2 text-sm leading-relaxed text-muted-foreground">A summary line. On mobile this slides up as a bottom sheet; on desktop it appears as a centered panel.</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full border border-border/60 px-2.5 py-0.5 text-xs text-muted-foreground">Tag</span>
+                <span class="rounded-full border border-border/60 px-2.5 py-0.5 text-xs text-muted-foreground">Another tag</span>
+              </div>
+              <div class="mt-4 border-t border-border/40 pt-4">
+                <p class="text-xs text-muted-foreground">Body content rendered via <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">.card-modal-body</code> styles — see global.css.</p>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground">Opens via <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">data-modal-target="id"</code>. Animated with translate-y + opacity (200ms). ESC key and backdrop click both close. Focus is trapped to close button on open.</p>
+        </div>
+
       </section>
 
       <!-- Page footer note -->
