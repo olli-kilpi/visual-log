@@ -4,12 +4,17 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  // Set to false on pages that don't use Unicorn Studio scenes
+  unicorn?: boolean;
 }
 
 const {
   title = "Portfolio",
-  description = "Minimal portfolio powered by Astro and Notion."
+  description = "Minimal portfolio powered by Astro and Notion.",
+  unicorn = true
 } = Astro.props;
+
+const unicornSnippet = `!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.2/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();`;
 ---
 
 <!DOCTYPE html>
@@ -21,9 +26,7 @@ const {
     <title>{title}</title>
     
     <!-- Unicorn Studio SDK -->
-    <script type="text/javascript">
-      !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.2/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
-    </script>
+    {unicorn && <script is:inline type="text/javascript" set:html={unicornSnippet} />}
   </head>
   <body class="bg-bg text-foreground">
     <slot />
