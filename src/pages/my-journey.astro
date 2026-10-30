@@ -1,69 +1,656 @@
 ---
-// My Journey page - Timeline placeholder (to be designed later)
+/*
+ * My Journey — scroll selects, story hangs off the playhead.
+ *
+ * Scroll → playhead highlights a stop. Title chip + body sit in the
+ *          fixed playhead (out of document flow), so stop geometry
+ *          and tick() never change.
+ * Click stop → snap that stop onto the playhead.
+ *
+ * Reused: BaseLayout, Navigation, Footer, Modal, filter pills, tags, card-modal-body
+ * Page-only: tracks, playhead, tooltip geometry
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import Modal from "../components/ui/Modal.astro";
+
+const tracks = [
+  { id: "art",     label: "Traditional Art" },
+  { id: "digital", label: "Digital Art" },
+  { id: "motion",  label: "Motion Design" },
+  { id: "it",      label: "IT & Consulting" },
+] as const;
+
+type TrackId = typeof tracks[number]["id"];
+
+interface Stop {
+  id: string;
+  year: number;
+  track: TrackId;
+  title: string;
+  body: string;
+}
+
+/* Dummy milestones — not real events. Replace when the real stories land. */
+const stops: Stop[] = [
+  { id: "s1",  year: 2005, track: "art",     title: "Placeholder · short story",     body: "Dummy text. This is not a real event — it only fills a short story on the Traditional Art track." },
+  { id: "s2",  year: 2008, track: "art",     title: "Placeholder · another short",   body: "Dummy text. Sample copy so this year has a second Traditional Art stop." },
+  { id: "s3",  year: 2009, track: "digital", title: "Placeholder · digital A",       body: "Dummy text. Fake Digital Art milestone. Nothing here is biographical." },
+  { id: "s4",  year: 2011, track: "it",      title: "Placeholder · two paragraphs",  body: "Dummy text. A made-up IT stop with a second paragraph so we can see how wrapping behaves.\n\nStill placeholder. Not a job, not a company, not a real year in this life." },
+  { id: "s5",  year: 2012, track: "art",     title: "Placeholder · art sample",      body: "Dummy text. One-line Traditional Art placeholder." },
+  { id: "s6",  year: 2013, track: "digital", title: "Placeholder · digital B",       body: "Dummy text. Another fake Digital Art beat, used to test spacing between years." },
+  { id: "s7",  year: 2014, track: "it",      title: "Placeholder · medium story",    body: "Dummy text. Sample IT & Consulting story, medium length.\n\nSecond paragraph of dummy copy. Safe to delete. Not a real discovery or role." },
+  { id: "s8",  year: 2015, track: "motion",  title: "Placeholder · motion A",        body: "Dummy text. Fake Motion Design stop. Short on purpose." },
+  { id: "s9",  year: 2016, track: "digital", title: "Placeholder · digital C",       body: "Dummy text. Filler for a busy year that also has an IT stop." },
+  { id: "s10", year: 2016, track: "it",      title: "Placeholder · long story",      body: "Dummy text. Long placeholder so the hanging card can be tested with several paragraphs.\n\nStill fake. There is no team, no promotion, no weekly ritual behind this.\n\nThird paragraph of dummy copy, only here for height.\n\nFourth paragraph. End of the sample." },
+  { id: "s11", year: 2018, track: "motion",  title: "Placeholder · motion B",        body: "Dummy text. Second Motion Design sample. Not a real tool or technique." },
+  { id: "s12", year: 2019, track: "it",      title: "Placeholder · job title here",  body: "Dummy text. Invented role name. Do not read as a CV line." },
+  { id: "s13", year: 2020, track: "digital", title: "Placeholder · digital D",       body: "Dummy text. Short Digital Art filler." },
+  { id: "s14", year: 2021, track: "motion",  title: "Placeholder · motion C",        body: "Dummy text. Third Motion Design sample, still not real." },
+  { id: "s15", year: 2022, track: "it",      title: "Placeholder · longest story",   body: "Dummy text. Longest sample, used to check overflow inside the hanging card.\n\nNo employer is named here because this is not employment history.\n\nThird dummy paragraph. The layout should scroll inside the card, not the page.\n\nFourth dummy paragraph. Replace all of this when the real stories exist." },
+  { id: "s16", year: 2023, track: "motion",  title: "Placeholder · motion D",        body: "Dummy text. Short Motion Design placeholder." },
+  { id: "s17", year: 2024, track: "digital", title: "Placeholder · digital E",       body: "Dummy text. Recent-looking Digital Art sample. Still dummy." },
+  { id: "s18", year: 2025, track: "it",      title: "Placeholder · newest stop",     body: "Dummy text. Newest fake stop, so the timeline can start from the present. Not a real project." },
+];
+
+const sorted = [...stops].sort((a, b) => b.year - a.year);
+const trackIndex = Object.fromEntries(tracks.map((t, i) => [t.id, i])) as Record<TrackId, number>;
+const trackLabel = Object.fromEntries(tracks.map((t) => [t.id, t.label])) as Record<TrackId, string>;
+
+const filterBtnClass =
+  "rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/40 data-[active=true]:border-transparent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground";
 ---
 
-<BaseLayout title="My Journey - Olli Kilpi">
+<BaseLayout title="My Journey — Olli Kilpi" unicorn={false}>
   <Navigation />
-  <main class="flex min-h-screen items-center bg-muted">
-    <div class="section-shell">
-      <div class="mx-auto max-w-3xl space-y-8 py-16 text-center">
-        <div class="space-y-4">
-          <h1 class="text-4xl font-semibold md:text-5xl">My Journey</h1>
-          <p class="text-lg text-muted-foreground">
-            A visual timeline of my design and development journey
-          </p>
-        </div>
-        
-        <div class="space-y-6 rounded-lg border border-border/60 bg-card p-8 text-left shadow-sm md:p-12">
-          <div class="space-y-4">
-            <div class="flex items-start gap-4">
-              <div class="mt-1 h-3 w-3 rounded-full bg-accent"></div>
-              <div class="flex-1 space-y-2">
-                <h3 class="font-semibold">Timeline Coming Soon</h3>
-                <p class="text-sm text-muted-foreground">
-                  I'm designing an interactive timeline to showcase my professional journey, 
-                  key projects, and milestones. Check back soon!
-                </p>
-              </div>
-            </div>
-            
-            <div class="flex items-start gap-4 opacity-60">
-              <div class="mt-1 h-3 w-3 rounded-full border-2 border-border"></div>
-              <div class="flex-1 space-y-2">
-                <h3 class="font-semibold">Placeholder Content</h3>
-                <p class="text-sm text-muted-foreground">
-                  This section will include career highlights, education, notable projects, 
-                  and personal growth moments.
-                </p>
-              </div>
-            </div>
-            
-            <div class="flex items-start gap-4 opacity-40">
-              <div class="mt-1 h-3 w-3 rounded-full border-2 border-border"></div>
-              <div class="flex-1 space-y-2">
-                <h3 class="font-semibold">Interactive Elements</h3>
-                <p class="text-sm text-muted-foreground">
-                  The timeline will be fully interactive with detailed views, 
-                  images, and contextual information for each milestone.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="pt-4">
-          <a 
-            href="/" 
-            class="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
-          >
-            ← Back to home
-          </a>
+  <main class="journey-page bg-bg">
+
+    <div class="sticky top-12 z-10 border-b border-border/50 bg-bg" id="filter-bar">
+      <div class="section-shell py-3 md:py-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="mr-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">Tracks</span>
+          {tracks.map((t) => (
+            <button
+              type="button"
+              class={filterBtnClass}
+              data-track={t.id}
+              data-active="true"
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
       </div>
     </div>
+
+    <!-- Same grid as the tracks, so the rule and dots share one geometry -->
+    <div class="playhead" id="playhead">
+      <div class="playhead-grid section-shell !py-0">
+        <span class="playhead-era font-mono text-xs text-muted-foreground" id="playheadEra" aria-hidden="true">—</span>
+        <span class="playhead-rule" aria-hidden="true">
+          <span class="playhead-mark bg-muted-foreground"></span>
+        </span>
+        <div class="tip-cluster" id="tipCluster" hidden>
+          <div class="tip" id="tip">
+            <span class="tip-title text-sm font-medium text-foreground" id="tipTitle"></span>
+          </div>
+          <div class="tip-story">
+            <div class="card-modal-body" id="tipBody"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="journey section-shell !py-0" id="journey">
+      <div class="tracks" id="tracks">
+        <div class="tracks-head border-b border-border/50" aria-hidden="true">
+          <div class="era-col"></div>
+          <div class="lines">
+            {tracks.map((t) => (
+              <span class="line-label text-muted-foreground" data-track={t.id}>{t.label}</span>
+            ))}
+          </div>
+        </div>
+
+        <div class="tracks-body">
+          <div class="rails" aria-hidden="true">
+            {tracks.map((t) => (
+              <div class="rail" data-track={t.id}></div>
+            ))}
+          </div>
+
+          {sorted.map((stop, i) => {
+            const showEra = i === 0 || sorted[i - 1].year !== stop.year;
+            const col = trackIndex[stop.track];
+            return (
+              <div
+                class={`stop-row${showEra ? " has-era" : ""}`}
+                id={stop.id}
+                data-track={stop.track}
+                data-year={String(stop.year)}
+                data-title={stop.title}
+                data-label={trackLabel[stop.track]}
+              >
+                <div class="era-col">
+                  {showEra && (
+                    <span class="era font-mono text-xs text-muted-foreground">{stop.year}</span>
+                  )}
+                </div>
+                <div class="lines">
+                  <button
+                    class="stop"
+                    type="button"
+                    data-stop={stop.id}
+                    aria-label={`${stop.year}: ${stop.title}`}
+                    title={stop.title}
+                    style={`grid-column: ${col + 1}`}
+                  >
+                    <span class="stop-ring border-accent" aria-hidden="true"></span>
+                    <span class="stop-dot bg-accent" aria-hidden="true"></span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <div class="story-source" hidden>
+      {sorted.map((stop) => (
+        <template id={`story-${stop.id}`}>
+          {stop.body.split("\n\n").map((p) => <p>{p}</p>)}
+        </template>
+      ))}
+    </div>
+
+    <Modal id="journey-story" class="sm:!max-w-lg">
+      <div class="overflow-y-auto p-6 sm:p-8">
+        <div class="flex flex-wrap items-center gap-2 pr-8">
+          <span class="font-mono text-xs text-muted-foreground" id="modalYear"></span>
+          <span
+            class="rounded-full border border-border/60 px-2.5 py-0.5 text-xs text-muted-foreground"
+            id="modalTag"
+          ></span>
+        </div>
+        <h2 class="mt-3 pr-8 text-xl font-semibold leading-tight" id="journey-story-title"></h2>
+        <div class="card-modal-body mt-4" id="modalBody"></div>
+      </div>
+    </Modal>
+
   </main>
+
   <Footer />
 </BaseLayout>
+
+<style>
+  .journey-page {
+    --playhead-y: 42vh;
+    --era-w: 2.25rem;
+    --cell: 1.2rem;
+    --track-w: calc(var(--cell) * 4);
+    --gap: 0.4rem;
+    --stop-gap: 5.5rem;
+    min-height: 100vh;
+  }
+
+  @media (min-width: 768px) {
+    .journey-page {
+      --era-w: 3.25rem;
+      --cell: 2.4rem;
+      --gap: 1.5rem;
+    }
+  }
+
+  .playhead {
+    position: fixed;
+    top: var(--playhead-y);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    pointer-events: none;
+  }
+
+  .playhead-grid {
+    display: grid;
+    grid-template-columns: var(--era-w) var(--track-w) minmax(0, 1fr);
+    column-gap: var(--gap);
+    align-items: center;
+  }
+
+  .playhead-era {
+    text-align: right;
+    opacity: 0.5;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  .journey-page.has-active .playhead-era { opacity: 1; color: var(--color-fg); }
+
+  .playhead-rule {
+    position: relative;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  .playhead-mark {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 1px;
+    rotate: 45deg;
+    translate: -50% -50%;
+    opacity: 0.45;
+    transition: background 0.2s, opacity 0.2s;
+  }
+
+  .journey-page.has-active .playhead-mark {
+    background: var(--color-accent);
+    opacity: 1;
+  }
+
+  /*
+   * Title sits in-flow on the playhead line. Body is position:absolute
+   * below it — hanging off the chip, never in document flow, so tick()
+   * and stop rows stay exactly as they are.
+   */
+  .tip-cluster {
+    position: relative;
+    min-width: 0;
+    max-width: min(32rem, 100%);
+  }
+
+  .tip-cluster[hidden] { display: none; }
+
+  .tip {
+    position: relative;
+    z-index: 1;
+    padding: 0.5rem 0.85rem 0.35rem;
+    background: var(--color-card);
+    border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    border-bottom-color: transparent;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .tip-title {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tip-story {
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 0;
+    right: 0;
+    z-index: 0;
+    max-height: min(42vh, calc(100vh - var(--playhead-y) - 4.5rem));
+    overflow-y: auto;
+    pointer-events: auto;
+    padding: 0 0.85rem 0.85rem;
+    background: var(--color-card);
+    border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    border-top: 0;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tip-story .card-modal-body > :last-child { margin-bottom: 0; }
+
+  .journey {
+    padding-top: var(--playhead-y) !important;
+    padding-bottom: calc(100vh - var(--playhead-y)) !important;
+  }
+
+  .tracks-head,
+  .stop-row {
+    display: grid;
+    grid-template-columns: var(--era-w) var(--track-w);
+    column-gap: var(--gap);
+    align-items: center;
+  }
+
+  .tracks-head {
+    align-items: end;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .lines {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    position: relative;
+  }
+
+  .line-label {
+    justify-self: center;
+    height: 6.5rem;
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    transition: opacity 0.3s;
+  }
+
+  @media (min-width: 768px) {
+    .line-label { height: 7.5rem; }
+  }
+
+  .line-label.is-off { opacity: 0.15; }
+
+  .tracks-body { position: relative; }
+
+  .rails {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--era-w) + var(--gap));
+    width: var(--track-w);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    pointer-events: none;
+  }
+
+  .rail { position: relative; }
+
+  .rail::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-border);
+    transform: translateX(-50%);
+    transition: opacity 0.3s;
+  }
+
+  .rail.is-off::before { opacity: 0; }
+
+  .stop-row { height: var(--stop-gap); }
+  .stop-row[hidden] { display: none; }
+
+  .era-col {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .era { opacity: 0.55; transition: opacity 0.25s, color 0.25s; }
+
+  .stop-row.is-hover .era {
+    opacity: 1;
+    color: var(--color-fg);
+  }
+
+  .stop-row.is-active .era { opacity: 0; }
+
+  .stop {
+    position: relative;
+    justify-self: center;
+    width: 44px;
+    height: 44px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .stop-dot,
+  .stop-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 50%;
+    translate: -50% -50%;
+    pointer-events: none;
+  }
+
+  .stop-dot {
+    width: 7px;
+    height: 7px;
+    box-shadow: 0 0 0 2px var(--color-bg);
+    opacity: 0.4;
+    transition: opacity 0.2s, scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .stop-ring {
+    width: 17px;
+    height: 17px;
+    border-width: 1.5px;
+    border-style: solid;
+    background: var(--color-bg);
+    opacity: 0;
+    scale: 0.4;
+    transition: opacity 0.2s, scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .stop-row.is-hover .stop-dot,
+  .stop:hover .stop-dot,
+  .stop:focus-visible .stop-dot {
+    opacity: 1;
+    scale: 1.3;
+  }
+
+  .stop-row.is-hover .stop-ring,
+  .stop:hover .stop-ring,
+  .stop:focus-visible .stop-ring {
+    opacity: 0.9;
+    scale: 1;
+  }
+
+  .stop-row.is-active .stop-dot { opacity: 1; scale: 1; }
+  .stop-row.is-active .stop-ring { opacity: 1; scale: 1; }
+
+  .stop:focus-visible { outline: none; }
+  .stop:focus-visible .stop-ring {
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-ring);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stop-dot, .stop-ring, .tip, .era { transition: none !important; }
+  }
+</style>
+
+<script>
+  const PLAYHEAD = 0.42;
+
+  function initJourney() {
+  const w = window as Window & { __journeyAbort?: AbortController };
+  w.__journeyAbort?.abort();
+  w.__journeyAbort = new AbortController();
+  const { signal } = w.__journeyAbort;
+
+  const page = document.querySelector(".journey-page") as HTMLElement;
+  const tipCluster = document.getElementById("tipCluster") as HTMLElement;
+  const tipTitle = document.getElementById("tipTitle") as HTMLElement;
+  const tipBody = document.getElementById("tipBody") as HTMLElement;
+  const playheadEra = document.getElementById("playheadEra") as HTMLElement;
+  const modalYear = document.getElementById("modalYear") as HTMLElement;
+  const modalTag = document.getElementById("modalTag") as HTMLElement;
+  const modalTitle = document.getElementById("journey-story-title") as HTMLElement;
+  const modalBody = document.getElementById("modalBody") as HTMLElement;
+
+  if (!page || !tipCluster || !tipBody) return;
+
+  const rows = Array.from(document.querySelectorAll<HTMLElement>(".stop-row"));
+  const hidden = new Set<string>();
+  let activeId: string | null = null;
+  let focusId: string | null = null;
+
+  function playheadY(): number {
+    return window.innerHeight * PLAYHEAD;
+  }
+
+  function visibleRows(): HTMLElement[] {
+    return rows.filter((r) => !r.hidden);
+  }
+
+  function stopCenterY(row: HTMLElement): number {
+    const btn = row.querySelector<HTMLElement>(".stop")!;
+    const rect = btn.getBoundingClientRect();
+    return rect.top + rect.height / 2;
+  }
+
+  function fillStory(row: HTMLElement): void {
+    modalYear.textContent = row.dataset.year ?? "";
+    modalTag.textContent = row.dataset.label ?? "";
+    modalTitle.textContent = row.dataset.title ?? "";
+    const tpl = document.getElementById(`story-${row.id}`) as HTMLTemplateElement | null;
+    tipBody.replaceChildren();
+    modalBody.replaceChildren();
+    if (tpl) {
+      tipBody.append(tpl.content.cloneNode(true));
+      modalBody.append(tpl.content.cloneNode(true));
+    }
+  }
+
+  function setActiveRow(row: HTMLElement | null): void {
+    rows.forEach((r) => r.classList.toggle("is-active", r === row));
+
+    if (!row) {
+      page.classList.remove("has-active");
+      tipCluster.hidden = true;
+      activeId = null;
+      playheadEra.textContent = "—";
+      return;
+    }
+
+    if (row.id !== activeId) {
+      activeId = row.id;
+      tipTitle.textContent = row.dataset.title ?? "";
+      fillStory(row);
+    }
+
+    page.classList.add("has-active");
+    tipCluster.hidden = false;
+    playheadEra.textContent = row.dataset.year ?? "—";
+  }
+
+  function tick(): void {
+    const py = playheadY();
+    const list = visibleRows();
+
+    if (focusId) {
+      const focused = document.getElementById(focusId);
+      if (focused && !focused.hidden) {
+        const dist = Math.abs(stopCenterY(focused) - py);
+        if (dist < window.innerHeight * 0.28) {
+          setActiveRow(focused);
+          return;
+        }
+      }
+      focusId = null;
+    }
+
+    let best: HTMLElement | null = null;
+    let bestDist = Infinity;
+    const band = 48;
+
+    for (const row of list) {
+      const dist = Math.abs(stopCenterY(row) - py);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = row;
+      }
+    }
+
+    setActiveRow(best && bestDist <= band ? best : null);
+  }
+
+  function scrollToStop(id: string): void {
+    const row = document.getElementById(id);
+    if (!row || row.hidden) return;
+    focusId = id;
+    const y = stopCenterY(row) + window.scrollY - playheadY();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    history.replaceState(null, "", `#${id}`);
+    window.scrollTo({ top: Math.max(0, y), behavior: reduce ? "auto" : "smooth" });
+  }
+
+  function setupStops(): void {
+    rows.forEach((row) => {
+      const btn = row.querySelector<HTMLButtonElement>(".stop");
+      if (!btn) return;
+      btn.addEventListener("mouseenter", () => row.classList.add("is-hover"), { signal });
+      btn.addEventListener("mouseleave", () => row.classList.remove("is-hover"), { signal });
+      btn.addEventListener("focus", () => row.classList.add("is-hover"), { signal });
+      btn.addEventListener("blur", () => row.classList.remove("is-hover"), { signal });
+      btn.addEventListener("click", () => scrollToStop(row.id), { signal });
+    });
+  }
+
+  function refreshEras(): void {
+    let prev: string | undefined;
+    visibleRows().forEach((row) => {
+      let era = row.querySelector<HTMLElement>(".era");
+      if (row.dataset.year !== prev) {
+        if (!era) {
+          era = document.createElement("span");
+          era.className = "era font-mono text-xs text-muted-foreground";
+          era.textContent = row.dataset.year ?? "";
+          row.querySelector(".era-col")?.append(era);
+        }
+        era.style.display = "";
+        row.classList.add("has-era");
+        prev = row.dataset.year;
+      } else if (era) {
+        era.style.display = "none";
+        row.classList.remove("has-era");
+      }
+    });
+  }
+
+  function applyFilters(): void {
+    rows.forEach((row) => {
+      row.hidden = hidden.has(row.dataset.track ?? "");
+    });
+    document.querySelectorAll<HTMLElement>(".rail, .line-label").forEach((el) => {
+      el.classList.toggle("is-off", hidden.has(el.dataset.track ?? ""));
+    });
+    refreshEras();
+    tick();
+  }
+
+  function setupFilters(): void {
+    document.querySelectorAll<HTMLButtonElement>("[data-track]").forEach((btn) => {
+      if (!btn.closest("#filter-bar")) return;
+      btn.addEventListener("click", () => {
+        const track = btn.dataset.track!;
+        const off = !hidden.has(track);
+        if (off) hidden.add(track);
+        else hidden.delete(track);
+        btn.dataset.active = String(!off);
+        applyFilters();
+      }, { signal });
+    });
+  }
+
+  setupFilters();
+  setupStops();
+  tick();
+
+  if (location.hash) {
+    const id = location.hash.slice(1);
+    requestAnimationFrame(() => scrollToStop(id));
+  }
+
+  window.addEventListener("scroll", tick, { passive: true, signal });
+  window.addEventListener("resize", tick, { passive: true, signal });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initJourney);
+  } else {
+    initJourney();
+  }
+</script>

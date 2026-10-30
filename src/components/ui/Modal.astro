@@ -85,7 +85,10 @@ const { id, class: className } = Astro.props;
     }
 
     document.addEventListener("click", (e) => {
-      const trigger = (e.target as Element).closest("[data-modal-target]");
+      const el = e.target instanceof Element ? e.target : (e.target as Node | null)?.parentElement;
+      if (!el) return;
+
+      const trigger = el.closest("[data-modal-target]");
       if (trigger) {
         e.preventDefault();
         const id = trigger.getAttribute("data-modal-target");
@@ -95,8 +98,8 @@ const { id, class: className } = Astro.props;
       }
 
       if (activeModal) {
-        const close = (e.target as Element).closest("[data-modal-close]");
-        const backdrop = (e.target as Element).closest("[data-modal-backdrop]");
+        const close = el.closest("[data-modal-close]");
+        const backdrop = el.closest("[data-modal-backdrop]");
         if (close || backdrop) closeModal(activeModal);
       }
     });
