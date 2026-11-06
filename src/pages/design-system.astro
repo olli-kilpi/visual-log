@@ -7,7 +7,7 @@ import Footer from "../components/Footer.astro";
 
 <BaseLayout
   title="Design System — Olli Kilpi"
-  description="Visual reference for the design tokens and components used across this site."
+  description="Visual reference for the design tokens, components, and tools used across this site."
 >
   <Navigation />
   <main class="bg-bg min-h-screen">
@@ -22,6 +22,68 @@ import Footer from "../components/Footer.astro";
           When <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-sm">tokens.css</code> changes, everything here reflects it automatically.
         </p>
       </header>
+
+      <!-- ==============================
+           STACK
+           ============================== -->
+      <section class="space-y-8">
+        <div class="space-y-1">
+          <h2 class="text-2xl font-semibold">Stack</h2>
+          <p class="max-w-xl text-sm text-muted-foreground">
+            What the site is made of, and what each part is for. The labels are roles — the kind of tool — not settings.
+          </p>
+        </div>
+
+        <div class="divide-y divide-border/40 rounded-md border border-border/60">
+          <div class="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-6 sm:px-5">
+            <p class="text-xs uppercase tracking-widest text-muted-foreground">Framework</p>
+            <div>
+              <p class="text-sm font-medium">Astro</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Builds the pages from shared pieces — navigation, sections, cards — and publishes them as a finished site.</p>
+            </div>
+          </div>
+
+          <div class="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-6 sm:px-5">
+            <p class="text-xs uppercase tracking-widest text-muted-foreground">Language</p>
+            <div>
+              <p class="text-sm font-medium">TypeScript</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Describes the content a page expects, such as a title, tags, and a link, so every card receives the same kind of information.</p>
+            </div>
+          </div>
+
+          <div class="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-6 sm:px-5">
+            <p class="text-xs uppercase tracking-widest text-muted-foreground">Library</p>
+            <div>
+              <p class="text-sm font-medium">Tailwind CSS</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Applies the tokens on this page — color, type, spacing, radius, shadow — as classes. Change a token, and the classes follow.</p>
+            </div>
+          </div>
+
+          <div class="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-6 sm:px-5">
+            <p class="text-xs uppercase tracking-widest text-muted-foreground">Tokens</p>
+            <div>
+              <p class="text-sm font-medium">CSS variables</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">The named values for the visual system below. Light and dark mode share the same names and swap the values.</p>
+            </div>
+          </div>
+
+          <div class="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-6 sm:px-5">
+            <p class="text-xs uppercase tracking-widest text-muted-foreground">Content</p>
+            <div>
+              <p class="text-sm font-medium">Notion</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Where case studies and the visual log are written. The site reads that writing when it is published and lays it out as cards and sections.</p>
+            </div>
+          </div>
+
+          <div class="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-6 sm:px-5">
+            <p class="text-xs uppercase tracking-widest text-muted-foreground">Motion & media</p>
+            <div>
+              <p class="text-sm font-medium">Figma, Rive, Lottie, Unicorn Studio, YouTube, video</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">A project can show a prototype, an animation, or a film inside the same frame. The original stays in its own tool.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- ==============================
            COLORS
