@@ -51,6 +51,47 @@ export function detectEmbedType(url: string, manualType?: string): EmbedType {
 }
 
 /**
+ * How a card preview behaves for the visitor:
+ * - image: static picture, the whole preview opens the modal
+ * - motion: plays by itself but cannot be interacted with, opens like an image
+ * - video: has its own player controls, opened with a separate expand button
+ * - interactive: the visitor plays with it in place, opened with a separate expand button
+ */
+export type PreviewKind = 'image' | 'motion' | 'video' | 'interactive';
+
+export function getPreviewKind(embedType: EmbedType): PreviewKind {
+  switch (embedType) {
+    case 'none':
+      return 'image';
+    case 'lottie':
+      return 'motion';
+    case 'video':
+    case 'youtube':
+      return 'video';
+    default:
+      return 'interactive';
+  }
+}
+
+/**
+ * Width / height of the embed frame. Keep in sync with getAspectRatioClass.
+ */
+export function getAspectRatio(embedType: EmbedType): number {
+  switch (embedType) {
+    case 'figma':
+      return 4 / 3;
+    case 'lottie':
+    case 'rive':
+    case 'rive-embed':
+      return 1;
+    case 'unicorn':
+      return 16 / 10;
+    default:
+      return 16 / 9;
+  }
+}
+
+/**
  * Get appropriate aspect ratio class for embed
  */
 export function getAspectRatioClass(embedType: EmbedType): string {

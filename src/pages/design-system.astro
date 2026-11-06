@@ -461,6 +461,7 @@ import Footer from "../components/Footer.astro";
               <button class="inline-flex h-10 items-center justify-center rounded-md border border-border bg-transparent px-4 text-sm font-medium transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Medium</button>
               <button class="inline-flex h-11 items-center justify-center rounded-md border border-border bg-transparent px-6 text-sm font-medium transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Large</button>
             </div>
+            <p class="text-xs text-muted-foreground">As a link: <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">as="a"</code> with <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">href</code>, plus optional <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">target</code> and <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">rel</code> for external links.</p>
           </div>
         </div>
 
@@ -473,6 +474,10 @@ import Footer from "../components/Footer.astro";
             <span class="rounded-full border border-border/60 px-2.5 py-0.5 text-xs text-muted-foreground">Motion Design</span>
             <span class="rounded-full border border-border/60 px-2.5 py-0.5 text-xs text-muted-foreground">Frontend</span>
             <span class="rounded-full border border-border/60 px-2.5 py-0.5 text-xs text-muted-foreground">Strategy</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground shadow-sm">Interactive</span>
+            <p class="text-xs text-muted-foreground">Filled badge. Sits on top of a card preview the visitor can play with. Added by the card itself, not a Notion tag.</p>
           </div>
         </div>
 
@@ -510,6 +515,34 @@ import Footer from "../components/Footer.astro";
                 <a class="inline-flex items-center text-sm font-medium text-accent hover:underline" href="#">View project →</a>
               </div>
             </article>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-sm font-medium">Preview kinds</p>
+            <p class="max-w-xl text-xs leading-relaxed text-muted-foreground">One card, four behaviours. The kind comes from the URL in Notion (<code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">getPreviewKind()</code> in <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">embedUtils.ts</code>) and is set as <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">data-kind</code> on the card.</p>
+            <div class="max-w-xl divide-y divide-border/40 rounded-md border border-border/60 text-xs">
+              <div class="grid grid-cols-[6rem_1fr] gap-4 p-3"><span class="font-mono text-muted-foreground">image</span><span>Whole preview opens the modal. Hover zoom and an expand icon. Tall images become a portrait card.</span></div>
+              <div class="grid grid-cols-[6rem_1fr] gap-4 p-3"><span class="font-mono text-muted-foreground">motion</span><span>Lottie. Plays by itself; the whole preview opens the modal.</span></div>
+              <div class="grid grid-cols-[6rem_1fr] gap-4 p-3"><span class="font-mono text-muted-foreground">video</span><span>YouTube, video files. Own player controls in place; "Expand" opens a big player and stops the small one.</span></div>
+              <div class="grid grid-cols-[6rem_1fr] gap-4 p-3"><span class="font-mono text-muted-foreground">interactive</span><span>Figma, Rive, Unicorn Studio, other embeds. Live in place, "Interactive" badge, "Expand" opens it big.</span></div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-sm font-medium">Portrait image card</p>
+            <div class="max-w-sm">
+              <article class="card group relative isolate flex flex-col overflow-hidden rounded-lg border border-border/60 bg-card shadow-sm" data-orientation="portrait">
+                <div class="card-media w-full overflow-hidden">
+                  <div class="card-image-frame block w-full overflow-hidden">
+                    <div class="card-image h-full w-full bg-gradient-to-b from-neutral-700 via-neutral-500 to-neutral-300"></div>
+                  </div>
+                </div>
+                <div class="card-content relative z-10 flex flex-1 flex-col gap-3 p-6">
+                  <h2 class="text-xl font-semibold leading-tight">Tall image</h2>
+                  <p class="text-sm leading-relaxed text-muted-foreground">When an image is taller than wide, it fills the whole card and runs under the text, which sits on a frosted panel.</p>
+                </div>
+              </article>
+            </div>
           </div>
         </div>
         <!-- Active Filter Chip -->
@@ -549,7 +582,7 @@ import Footer from "../components/Footer.astro";
               </div>
             </div>
           </div>
-          <p class="text-xs text-muted-foreground">Opens via <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">data-modal-target="id"</code>. Animated with translate-y + opacity (200ms). ESC key and backdrop click both close. Focus is trapped to close button on open.</p>
+          <p class="text-xs text-muted-foreground">Opens via <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">data-modal-target="id"</code>. Animated with translate-y + opacity (200ms). ESC key and backdrop click both close. Focus moves to the close button on open, and Tab stays inside the panel. Content inside <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono">&lt;template data-modal-lazy&gt;</code> is only added while the modal is open, so players and embeds do not load or play in the background. The card modal shows media on top (up to 72% of the screen height) with the text below.</p>
         </div>
 
       </section>

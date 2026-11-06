@@ -2,7 +2,7 @@
 import EmbedPlayer from "../EmbedPlayer.astro";
 import Modal from "./Modal.astro";
 import CardModal from "./CardModal.astro";
-import { detectEmbedType } from "../../lib/embedUtils";
+import { detectEmbedType, getPreviewKind } from "../../lib/embedUtils";
 
 interface Props {
   id: string;
@@ -38,14 +38,24 @@ const isEmbed =
     : false);
 const mediaEmbedType =
   media && !embedUrl ? detectEmbedType(media) : undefined;
+const resolvedEmbedType = isEmbed
+  ? detectEmbedType(displaySource!, embedType || mediaEmbedType)
+  : "none";
+const kind = getPreviewKind(resolvedEmbedType);
 
 const modalId = `modal-${id}`;
-const hasDetails = !!bodyContent;
+const hasModal = !!displaySource || !!bodyContent;
+// Image and motion previews open the modal themselves. Video and interactive
+// previews keep their own clicks, so they get a separate expand button.
+const previewOpensModal = hasModal && !!displaySource && (kind === "image" || kind === "motion");
+const showExpandButton = hasModal && !!displaySource && !previewOpensModal;
+const showDetailsButton = hasModal && !displaySource;
 ---
 
 <article
-  class="card group relative flex overflow-hidden rounded-lg border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-md"
+  class="card group relative isolate flex overflow-hidden rounded-lg border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-md"
   data-section
+  data-kind={kind}
   data-visibility={visibility.toLowerCase()}
   data-tags={tags.map((tag) => tag.toLowerCase()).join("|")}
   id={id}
@@ -53,19 +63,40 @@ const hasDetails = !!bodyContent;
   <!-- Media Section -->
   <div class="card-media w-full overflow-hidden">
     {displaySource ? (
-      isEmbed ? (
-        <EmbedPlayer
-          src={embedUrl || media!}
-          type={embedType || mediaEmbedType}
-        />
-      ) : (
-        <div class="aspect-video w-full overflow-hidden bg-muted">
+      kind === "image" ? (
+        <button
+          type="button"
+          data-modal-target={modalId}
+          class="card-image-frame block aspect-video w-full cursor-zoom-in overflow-hidden bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+          aria-label={`Open ${title} larger`}
+        >
           <img
-            class="h-full w-full object-cover transition-transform group-hover:scale-105"
+            data-card-image
+            class="card-image h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             src={media}
             alt={`${title} media`}
             loading="lazy"
           />
+        </button>
+      ) : (
+        <div class="relative">
+          <EmbedPlayer
+            src={displaySource}
+            type={embedType || mediaEmbedType}
+          />
+          {previewOpensModal && (
+            <button
+              type="button"
+              data-modal-target={modalId}
+              class="absolute inset-0 z-10 cursor-zoom-in rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+              aria-label={`Open ${title} larger`}
+            ></button>
+          )}
+          {kind === "interactive" && (
+            <span class="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground shadow-sm">
+              Interactive
+            </span>
+          )}
         </div>
       )
     ) : (
@@ -87,8 +118,19 @@ const hasDetails = !!bodyContent;
     )}
   </div>
 
+  {previewOpensModal && (
+    <span
+      class="pointer-events-none absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-card text-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+      aria-hidden="true"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
+      </svg>
+    </span>
+  )}
+
   <!-- Content Section -->
-  <div class="card-content flex flex-1 flex-col gap-3 p-6">
+  <div class="card-content relative z-10 flex flex-1 flex-col gap-3 p-6">
     <h2 class="text-xl font-semibold leading-tight md:text-2xl">{title}</h2>
     <p class="flex-1 text-sm leading-relaxed text-muted-foreground md:text-base">
       {content}
@@ -103,8 +145,21 @@ const hasDetails = !!bodyContent;
       </div>
     )}
     <div class="flex items-center gap-3">
-      {hasDetails && (
+      {showExpandButton && (
         <button
+          type="button"
+          data-modal-target={modalId}
+          class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+        >
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
+          </svg>
+          Expand
+        </button>
+      )}
+      {showDetailsButton && (
+        <button
+          type="button"
           data-modal-target={modalId}
           class="inline-flex items-center text-sm font-medium text-accent hover:underline"
         >
@@ -125,8 +180,8 @@ const hasDetails = !!bodyContent;
   </div>
 </article>
 
-{hasDetails && (
-  <Modal id={modalId}>
+{hasModal && (
+  <Modal id={modalId} class="sm:!max-w-6xl sm:!max-h-[92vh]">
     <CardModal
       id={id}
       title={title}
@@ -140,3 +195,31 @@ const hasDetails = !!bodyContent;
     />
   </Modal>
 )}
+
+<script>
+  // Tall images run under the text section (frosted). Image size is only
+  // known once the external file has loaded.
+  function markOrientation(img: HTMLImageElement) {
+    if (!img.naturalWidth) return;
+    const card = img.closest<HTMLElement>(".card");
+    if (card && img.naturalHeight > img.naturalWidth * 1.05) {
+      card.dataset.orientation = "portrait";
+    }
+  }
+
+  document.querySelectorAll<HTMLImageElement>("img[data-card-image]").forEach((img) => {
+    if (img.complete) markOrientation(img);
+    else img.addEventListener("load", () => markOrientation(img), { once: true });
+  });
+
+  // Opening a video in the modal stops the card's own player, so only one plays.
+  document.addEventListener("click", (e) => {
+    const trigger = (e.target as Element | null)?.closest?.(".card[data-kind='video'] [data-modal-target]");
+    const card = trigger?.closest(".card");
+    if (!card) return;
+    card.querySelectorAll("video").forEach((video) => video.pause());
+    card.querySelectorAll("iframe").forEach((iframe) => {
+      iframe.src = iframe.src;
+    });
+  });
+</script>

@@ -74,6 +74,35 @@
     @apply w-full;
   }
 
+  /* Portrait image card: the image fills the whole card and runs under
+     the text, which sits on a frosted panel. The frame keeps a taller
+     shape so more of the image shows above the text. */
+  .card[data-orientation="portrait"] .card-image-frame {
+    aspect-ratio: 4 / 5;
+    @apply bg-transparent;
+  }
+
+  .card[data-orientation="portrait"] .card-image {
+    @apply absolute inset-0;
+  }
+
+  .card[data-orientation="portrait"] .card-content {
+    @apply border-t border-white/10 backdrop-blur-xl backdrop-saturate-150;
+    /* Token colors are plain var()s, so Tailwind's /70 opacity shorthand does not work on them */
+    background-color: color-mix(in srgb, var(--color-card) 70%, transparent);
+  }
+
+  /* Modal media height: smaller on phones so the text peeks in */
+  .card-modal-media {
+    --modal-media-h: 60vh;
+  }
+
+  @media (min-width: 640px) {
+    .card-modal-media {
+      --modal-media-h: 72vh;
+    }
+  }
+
   /* Rich body content inside card modal */
   .card-modal-body p {
     @apply text-sm leading-relaxed text-muted-foreground lg:text-base;

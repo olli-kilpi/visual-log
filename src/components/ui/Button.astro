@@ -6,6 +6,8 @@ import { cn } from "../../lib/utils";
 interface Props extends ButtonVariants {
   as?: "button" | "a";
   href?: string;
+  target?: string;
+  rel?: string;
   type?: "button" | "submit" | "reset";
   class?: string;
 }
@@ -13,6 +15,8 @@ interface Props extends ButtonVariants {
 const {
   as = "button",
   href,
+  target,
+  rel,
   type = "button",
   variant,
   size,
@@ -23,7 +27,7 @@ const classes = cn(buttonVariants({ variant, size }), className);
 ---
 
 {as === "a" ? (
-  <a class={classes} href={href}>
+  <a class={classes} href={href} target={target} rel={rel}>
     <slot />
   </a>
 ) : (

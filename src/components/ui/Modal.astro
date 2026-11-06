@@ -49,9 +49,29 @@ const { id, class: className } = Astro.props;
     let activeModal: HTMLElement | null = null;
     let previousFocus: HTMLElement | null = null;
 
+    const FOCUSABLE =
+      'a[href], button:not([disabled]), input, select, textarea, iframe, video[controls], [tabindex]:not([tabindex="-1"])';
+
+    // <template data-modal-lazy> content exists only while the modal is open,
+    // so heavy embeds (players, iframes) do not load or play in the background.
+    function mountLazyContent(modal: HTMLElement) {
+      modal.querySelectorAll<HTMLTemplateElement>("template[data-modal-lazy]").forEach((template) => {
+        const holder = document.createElement("div");
+        holder.className = "contents";
+        holder.setAttribute("data-modal-lazy-mounted", "");
+        holder.appendChild(template.content.cloneNode(true));
+        template.after(holder);
+      });
+    }
+
+    function unmountLazyContent(modal: HTMLElement) {
+      modal.querySelectorAll("[data-modal-lazy-mounted]").forEach((holder) => holder.remove());
+    }
+
     function openModal(modal: HTMLElement) {
       activeModal = modal;
       previousFocus = document.activeElement as HTMLElement;
+      mountLazyContent(modal);
       modal.classList.remove("hidden");
       modal.classList.add("flex");
       document.body.style.overflow = "hidden";
@@ -78,6 +98,7 @@ const { id, class: className } = Astro.props;
       setTimeout(() => {
         modal.classList.remove("flex");
         modal.classList.add("hidden");
+        unmountLazyContent(modal);
         document.body.style.overflow = "";
         activeModal = null;
         previousFocus?.focus();
@@ -105,8 +126,24 @@ const { id, class: className } = Astro.props;
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && activeModal) {
+      if (!activeModal) return;
+      if (e.key === "Escape") {
         closeModal(activeModal);
+        return;
+      }
+      if (e.key === "Tab") {
+        const panel = activeModal.querySelector("[data-modal-panel]");
+        const focusable = Array.from(panel?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (document.activeElement === last || !panel?.contains(document.activeElement))) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     });
   }
